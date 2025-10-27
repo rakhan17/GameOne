@@ -1,10 +1,11 @@
-# 🎮 GameOne v2.2 - Complete Game Collection Manager
+c# 🎮 GameOne v2.3 - Complete Game Collection Manager ✨
 
 [![Status](https://img.shields.io/badge/Status-Production%20Ready-brightgreen)](https://github.com)
 [![Platform](https://img.shields.io/badge/Platform-Web%20%7C%20Mobile%20%7C%20Desktop-blue)](https://flutter.dev)
 [![Storage](https://img.shields.io/badge/Storage-JSON-orange)](https://www.json.org/)
+[![Version](https://img.shields.io/badge/Version-2.3-yellow)](https://github.com)
 
-**Manage your game collection with style!** Track games, playtime, status, and more across all platforms.
+**Manage your game collection with style and smooth animations!** Track games, playtime, status, and more across all platforms.
 
 ---
 
@@ -12,6 +13,7 @@
 
 ### Core Features
 - 🎮 **Game Management** - Add, edit, delete games
+- 👆 **Swipe to Delete** - Quick delete with swipe gesture (NEW!)
 - ⭐ **Favorites System** - Mark your favorite games
 - 🎯 **Status Tracking** - Playing, Completed, Wishlist, On Hold, Not Started
 - ⏱️ **Playtime Tracking** - Record hours played
@@ -19,6 +21,8 @@
 - 🔍 **Search & Sort** - Find games quickly (4 sort options)
 - 📊 **Statistics Dashboard** - Detailed analytics
 - 💾 **Export/Import** - Backup and restore data
+- 🔄 **Pull to Refresh** - Refresh your collection easily (NEW!)
+- ✨ **Smooth Animations** - Hero transitions & staggered lists (NEW!)
 
 ### Platform Support
 - ✅ **Web** - Run in any browser
@@ -369,9 +373,19 @@ Ctrl+F / Cmd+F - Focus search bar
 
 ---
 
-## 🎉 Version 2.2 Highlights
+## 🎉 Version 2.3 Highlights
 
-### What's New
+### What's New in v2.3 ✨
+- ✅ **Swipe to Delete** - Quick gesture-based deletion
+- ✅ **Hero Animations** - Smooth transitions between screens
+- ✅ **Pull to Refresh** - Modern refresh UX
+- ✅ **Staggered Animations** - Beautiful list entrance effects
+- ✅ **Enhanced Colors** - Vibrant and modern color palette
+- ✅ **Pulsing Empty State** - Animated empty state icon
+- ✅ **Enhanced Details Modal** - More info with drag handle
+- ✅ **FAB Animation** - Bouncy entrance effect
+
+### Previous Updates (v2.2)
 - ✅ **Overflow fixed** - No more rendering errors
 - ✅ **Web support** - Works in browser perfectly
 - ✅ **SharedPreferences** - Universal storage
@@ -380,7 +394,7 @@ Ctrl+F / Cmd+F - Focus search bar
 
 ### Status
 - **Bugs**: 0 🐛
-- **Features**: 8+ ✨
+- **Features**: 11+ ✨
 - **Platforms**: 6 📱
 - **Production**: Ready 🚀
 
@@ -391,11 +405,12 @@ Ctrl+F / Cmd+F - Focus search bar
 | Metric | Value |
 |--------|-------|
 | Screens | 4 |
-| Features | 8+ |
+| Features | 11+ |
 | Platforms | 6 |
 | Sample Games | 16 |
-| Documentation Files | 4 |
-| Lines of Code | ~2500+ |
+| Documentation Files | 5 |
+| Lines of Code | ~2700+ |
+| Animations | 5+ ✨ |
 | Bug Count | 0 ✅ |
 
 ---
@@ -414,10 +429,11 @@ flutter run -d chrome
 
 ---
 
-**Version**: 2.2  
+**Version**: 2.3 ✨  
 **Status**: ✅ Production Ready  
 **Platform**: 🌐 Universal  
 **Storage**: 💾 JSON  
+**Animations**: ✨ Smooth & Beautiful  
 **Bugs**: 🐛 Zero  
 
 **Made with ❤️ using Flutter**
