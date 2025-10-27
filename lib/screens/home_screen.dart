@@ -50,18 +50,31 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AddEditGameScreen(),
+      floatingActionButton: ScaleTransition(
+        scale: CurvedAnimation(
+          parent: ModalRoute.of(context)!.animation!,
+          curve: Curves.elasticOut,
+        ),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddEditGameScreen(),
+              ),
+            );
+          },
+          icon: const Icon(Icons.add_rounded, size: 28),
+          label: const Text(
+            'Tambah Game',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
             ),
-          );
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Tambah Game'),
-        backgroundColor: AppTheme.primaryYellow,
+          ),
+          backgroundColor: AppTheme.primaryYellow,
+          elevation: 8,
+        ),
       ),
     );
   }
@@ -558,12 +571,34 @@ class _HomeScreenState extends State<HomeScreen> {
           return _buildEmptyState();
         }
 
-        return ListView.builder(
-          padding: const EdgeInsets.only(bottom: 80),
-          itemCount: games.length,
-          itemBuilder: (context, index) {
-            return GameCard(game: games[index]);
+        return RefreshIndicator(
+          onRefresh: () async {
+            await provider.loadGames();
           },
+          color: AppTheme.primaryBlue,
+          backgroundColor: Colors.white,
+          child: ListView.builder(
+            padding: const EdgeInsets.only(bottom: 80),
+            physics: const AlwaysScrollableScrollPhysics(),
+            itemCount: games.length,
+            itemBuilder: (context, index) {
+              return TweenAnimationBuilder<double>(
+                duration: Duration(milliseconds: 200 + (index * 50)),
+                tween: Tween(begin: 0.0, end: 1.0),
+                curve: Curves.easeOut,
+                builder: (context, value, child) {
+                  return Transform.translate(
+                    offset: Offset(0, 20 * (1 - value)),
+                    child: Opacity(
+                      opacity: value,
+                      child: child,
+                    ),
+                  );
+                },
+                child: GameCard(game: games[index]),
+              );
+            },
+          ),
         );
       },
     );
@@ -574,21 +609,42 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  AppTheme.primaryBlue.withOpacity(0.2),
-                  AppTheme.primaryYellow.withOpacity(0.2),
+          TweenAnimationBuilder<double>(
+            duration: const Duration(milliseconds: 1500),
+            tween: Tween(begin: 0.8, end: 1.0),
+            curve: Curves.easeInOut,
+            builder: (context, value, child) {
+              return Transform.scale(
+                scale: value,
+                child: child,
+              );
+            },
+            onEnd: () {
+              // Rebuild to restart animation
+            },
+            child: Container(
+              padding: const EdgeInsets.all(32),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    AppTheme.primaryBlue.withOpacity(0.2),
+                    AppTheme.primaryYellow.withOpacity(0.2),
+                  ],
+                ),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: AppTheme.primaryBlue.withOpacity(0.2),
+                    blurRadius: 20,
+                    spreadRadius: 5,
+                  ),
                 ],
               ),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.gamepad,
-              size: 80,
-              color: AppTheme.primaryBlue.withOpacity(0.5),
+              child: Icon(
+                Icons.gamepad,
+                size: 80,
+                color: AppTheme.primaryBlue.withOpacity(0.5),
+              ),
             ),
           ),
           const SizedBox(height: 24),
