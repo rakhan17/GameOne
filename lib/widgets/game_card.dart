@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/game.dart';
+import '../models/custom_list.dart';
 import '../providers/game_provider.dart';
 import '../utils/app_theme.dart';
 import '../screens/add_edit_game_screen.dart';
@@ -25,11 +26,15 @@ class GameCard extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 24),
+<<<<<<< Updated upstream
         child: const Icon(
           Icons.delete_sweep,
           color: Colors.white,
           size: 32,
         ),
+=======
+        child: const Icon(Icons.delete_sweep, color: Colors.white, size: 32),
+>>>>>>> Stashed changes
       ),
       confirmDismiss: (direction) async {
         return await showDialog(
@@ -75,18 +80,26 @@ class GameCard extends StatelessWidget {
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         elevation: 4,
+<<<<<<< Updated upstream
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
+=======
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+>>>>>>> Stashed changes
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
+<<<<<<< Updated upstream
               colors: [
                 Colors.white,
                 AppTheme.lightBlue.withOpacity(0.2),
               ],
+=======
+              colors: [Colors.white, AppTheme.lightBlue.withOpacity(0.2)],
+>>>>>>> Stashed changes
             ),
             borderRadius: BorderRadius.circular(16),
           ),
@@ -111,10 +124,14 @@ class GameCard extends StatelessWidget {
                           height: 60,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
+<<<<<<< Updated upstream
                               colors: [
                                 AppTheme.primaryBlue,
                                 AppTheme.darkBlue,
                               ],
+=======
+                              colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
+>>>>>>> Stashed changes
                             ),
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
@@ -132,142 +149,196 @@ class GameCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                    const SizedBox(width: 16),
-                    // Game Info
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            game.title,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                              color: AppTheme.textPrimary,
+                      const SizedBox(width: 16),
+                      // Game Info
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              game.title,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppTheme.textPrimary,
+                              ),
                             ),
-                          ),
-                          const SizedBox(height: 4),
-                          Wrap(
-                            spacing: 4,
-                            runSpacing: 4,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 3,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: AppTheme.primaryYellow,
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  game.genre,
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppTheme.textPrimary,
+                            const SizedBox(height: 4),
+                            Wrap(
+                              spacing: 4,
+                              runSpacing: 4,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 3,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.primaryYellow,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    game.genre,
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      color: AppTheme.textPrimary,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 6,
-                                  vertical: 3,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: _getStatusColor(game.status),
-                                  borderRadius: BorderRadius.circular(6),
-                                ),
-                                child: Text(
-                                  game.status,
-                                  style: const TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 6,
+                                    vertical: 3,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: _getStatusColor(game.status),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Text(
+                                    game.status,
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w600,
+                                      color: Colors.white,
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Favorite Button
-                    IconButton(
-                      onPressed: () {
-                        context.read<GameProvider>().toggleFavorite(game.id);
-                      },
-                      icon: Icon(
-                        game.isFavorite ? Icons.star : Icons.star_border,
-                        color: game.isFavorite
-                            ? AppTheme.primaryYellow
-                            : AppTheme.textSecondary,
-                        size: 28,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12),
-                const Divider(height: 1),
-                const SizedBox(height: 12),
-                // Platform, Rating and Playtime
-                Row(
-                  children: [
-                    Icon(
-                      _getPlatformIcon(game.platform),
-                      size: 16,
-                      color: AppTheme.primaryBlue,
-                    ),
-                    const SizedBox(width: 4),
-                    Expanded(
-                      child: Text(
-                        game.platform,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppTheme.textSecondary,
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            // Custom list badges
+                            Consumer<GameProvider>(
+                              builder: (context, provider, _) {
+                                final listNames = game.listIds
+                                    .map(
+                                      (id) => provider.lists
+                                          .firstWhere(
+                                            (l) => l.id == id,
+                                            orElse: () => CustomList(
+                                              id: 'x',
+                                              name: '',
+                                              colorValue: 0,
+                                            ),
+                                          )
+                                          .name,
+                                    )
+                                    .where((name) => name.isNotEmpty)
+                                    .toList();
+                                if (listNames.isEmpty) {
+                                  return const SizedBox.shrink();
+                                }
+                                return Wrap(
+                                  spacing: 6,
+                                  children: listNames
+                                      .map(
+                                        (name) => Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 6,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: AppTheme.lightBlue,
+<<<<<<< Updated upstream
+                                            borderRadius: BorderRadius.circular(8),
+=======
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+>>>>>>> Stashed changes
+                                          ),
+                                          child: Text(
+                                            name,
+                                            style: const TextStyle(
+                                              fontSize: 11,
+                                              color: AppTheme.textPrimary,
+                                            ),
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                        overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    if (game.playtimeHours > 0) ...[
-                      const Icon(
-                        Icons.schedule,
+                      // Favorite Button
+                      IconButton(
+                        onPressed: () {
+                          context.read<GameProvider>().toggleFavorite(game.id);
+                        },
+                        icon: Icon(
+                          game.isFavorite ? Icons.star : Icons.star_border,
+                          color: game.isFavorite
+                              ? AppTheme.primaryYellow
+                              : AppTheme.textSecondary,
+                          size: 28,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  const Divider(height: 1),
+                  const SizedBox(height: 12),
+                  // Platform, Rating and Playtime
+                  Row(
+                    children: [
+                      Icon(
+                        _getPlatformIcon(game.platform),
                         size: 16,
-                        color: Colors.green,
+                        color: AppTheme.primaryBlue,
+                      ),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          game.platform,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: AppTheme.textSecondary,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      if (game.playtimeHours > 0) ...[
+                        const Icon(
+                          Icons.schedule,
+                          size: 16,
+                          color: Colors.green,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          '${game.playtimeHours}h',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                      ],
+                      const Icon(
+                        Icons.star,
+                        size: 16,
+                        color: AppTheme.primaryYellow,
                       ),
                       const SizedBox(width: 4),
                       Text(
-                        '${game.playtimeHours}h',
+                        game.rating.toStringAsFixed(1),
                         style: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.green,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.textPrimary,
                         ),
                       ),
-                      const SizedBox(width: 12),
                     ],
-                    const Icon(
-                      Icons.star,
-                      size: 16,
-                      color: AppTheme.primaryYellow,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      game.rating.toStringAsFixed(1),
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                        color: AppTheme.textPrimary,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
-    ),
     );
   }
 
@@ -346,10 +417,14 @@ class GameCard extends StatelessWidget {
                     height: 80,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
+<<<<<<< Updated upstream
                         colors: [
                           AppTheme.primaryBlue,
                           AppTheme.darkBlue,
                         ],
+=======
+                        colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
+>>>>>>> Stashed changes
                       ),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
@@ -382,7 +457,11 @@ class GameCard extends StatelessWidget {
                       const SizedBox(height: 8),
                       Row(
                         children: [
-                          const Icon(Icons.star, color: AppTheme.primaryYellow, size: 20),
+                          const Icon(
+                            Icons.star,
+                            color: AppTheme.primaryYellow,
+                            size: 20,
+                          ),
                           const SizedBox(width: 4),
                           Text(
                             game.rating.toStringAsFixed(1),
@@ -401,11 +480,27 @@ class GameCard extends StatelessWidget {
             const SizedBox(height: 24),
             _buildDetailRow('Genre', game.genre, Icons.category),
             const SizedBox(height: 12),
+<<<<<<< Updated upstream
             _buildDetailRow('Platform', game.platform, _getPlatformIcon(game.platform)),
             const SizedBox(height: 12),
             _buildDetailRow('Status', game.status, Icons.info_outline),
             const SizedBox(height: 12),
             _buildDetailRow('Playtime', '${game.playtimeHours} jam', Icons.schedule),
+=======
+            _buildDetailRow(
+              'Platform',
+              game.platform,
+              _getPlatformIcon(game.platform),
+            ),
+            const SizedBox(height: 12),
+            _buildDetailRow('Status', game.status, Icons.info_outline),
+            const SizedBox(height: 12),
+            _buildDetailRow(
+              'Playtime',
+              '${game.playtimeHours} jam',
+              Icons.schedule,
+            ),
+>>>>>>> Stashed changes
             if (game.notes.isNotEmpty) ...[
               const SizedBox(height: 16),
               const Text(
