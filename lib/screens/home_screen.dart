@@ -43,25 +43,38 @@ class _HomeScreenState extends State<HomeScreen> {
               _buildHeader(),
               _buildSearchAndSort(),
               _buildFilterSection(),
-<<<<<<< Updated upstream
-=======
-              Expanded(child: _buildGameList()),
+              Expanded(
+                child: _buildGameList(),
+              ),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AddEditGameScreen(),
+      floatingActionButton: ScaleTransition(
+        scale: CurvedAnimation(
+          parent: ModalRoute.of(context)!.animation!,
+          curve: Curves.elasticOut,
+        ),
+        child: FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const AddEditGameScreen(),
+              ),
+            );
+          },
+          icon: const Icon(Icons.add_rounded, size: 28),
+          label: const Text(
+            'Tambah Game',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16,
             ),
-          );
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('Tambah Game'),
-        backgroundColor: AppTheme.primaryYellow,
+          ),
+          backgroundColor: AppTheme.primaryYellow,
+          elevation: 8,
+        ),
       ),
     );
   }
@@ -74,7 +87,10 @@ class _HomeScreenState extends State<HomeScreen> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
+          colors: [
+            AppTheme.primaryBlue,
+            AppTheme.darkBlue,
+          ],
         ),
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(32),
@@ -120,7 +136,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                     Text(
                       'Koleksi Game Favorit',
-                      style: TextStyle(fontSize: 14, color: Colors.white70),
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white70,
+                      ),
                     ),
                   ],
                 ),
@@ -149,7 +168,11 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   );
                 },
-                icon: const Icon(Icons.settings, color: Colors.white, size: 28),
+                icon: const Icon(
+                  Icons.settings,
+                  color: Colors.white,
+                  size: 28,
+                ),
               ),
             ],
           ),
@@ -157,23 +180,13 @@ class _HomeScreenState extends State<HomeScreen> {
           Consumer<GameProvider>(
             builder: (context, provider, _) {
               final totalGames = provider.allGames.length;
-              final favoriteGames = provider.allGames
-                  .where((g) => g.isFavorite)
-                  .length;
-
+              final favoriteGames = provider.allGames.where((g) => g.isFavorite).length;
+              
               return Row(
                 children: [
-                  _buildStatCard(
-                    'Total Game',
-                    totalGames.toString(),
-                    Icons.videogame_asset,
-                  ),
+                  _buildStatCard('Total Game', totalGames.toString(), Icons.videogame_asset),
                   const SizedBox(width: 12),
-                  _buildStatCard(
-                    'Favorit',
-                    favoriteGames.toString(),
-                    Icons.star,
-                  ),
+                  _buildStatCard('Favorit', favoriteGames.toString(), Icons.star),
                 ],
               );
             },
@@ -190,7 +203,10 @@ class _HomeScreenState extends State<HomeScreen> {
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.2),
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.3),
+            width: 1,
+          ),
         ),
         child: Row(
           children: [
@@ -209,7 +225,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 Text(
                   label,
-                  style: const TextStyle(fontSize: 11, color: Colors.white70),
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: Colors.white70,
+                  ),
                 ),
               ],
             ),
@@ -226,33 +245,274 @@ class _HomeScreenState extends State<HomeScreen> {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
->>>>>>> Stashed changes
               Expanded(
-                child: _buildGameList(),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AppTheme.primaryBlue.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      provider.setSearchQuery(value);
+                    },
+                    decoration: InputDecoration(
+                      hintText: 'Cari game...',
+                      prefixIcon: const Icon(Icons.search, color: AppTheme.primaryBlue),
+                      suffixIcon: _searchController.text.isNotEmpty
+                          ? IconButton(
+                              icon: const Icon(Icons.clear, size: 20),
+                              onPressed: () {
+                                _searchController.clear();
+                                provider.setSearchQuery('');
+                              },
+                            )
+                          : null,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.white,
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primaryBlue.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: PopupMenuButton<String>(
+                  icon: const Icon(Icons.sort, color: AppTheme.primaryBlue),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  onSelected: (value) {
+                    provider.setSortBy(value);
+                  },
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      value: 'dateAdded',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.access_time,
+                            size: 20,
+                            color: provider.sortBy == 'dateAdded' ? AppTheme.primaryBlue : Colors.grey,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Terbaru',
+                            style: TextStyle(
+                              fontWeight: provider.sortBy == 'dateAdded' ? FontWeight.bold : FontWeight.normal,
+                              color: provider.sortBy == 'dateAdded' ? AppTheme.primaryBlue : Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'title',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.sort_by_alpha,
+                            size: 20,
+                            color: provider.sortBy == 'title' ? AppTheme.primaryBlue : Colors.grey,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Nama (A-Z)',
+                            style: TextStyle(
+                              fontWeight: provider.sortBy == 'title' ? FontWeight.bold : FontWeight.normal,
+                              color: provider.sortBy == 'title' ? AppTheme.primaryBlue : Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'rating',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.star,
+                            size: 20,
+                            color: provider.sortBy == 'rating' ? AppTheme.primaryBlue : Colors.grey,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Rating Tertinggi',
+                            style: TextStyle(
+                              fontWeight: provider.sortBy == 'rating' ? FontWeight.bold : FontWeight.normal,
+                              color: provider.sortBy == 'rating' ? AppTheme.primaryBlue : Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem(
+                      value: 'playtime',
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.schedule,
+                            size: 20,
+                            color: provider.sortBy == 'playtime' ? AppTheme.primaryBlue : Colors.grey,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            'Playtime Terbanyak',
+                            style: TextStyle(
+                              fontWeight: provider.sortBy == 'playtime' ? FontWeight.bold : FontWeight.normal,
+                              color: provider.sortBy == 'playtime' ? AppTheme.primaryBlue : Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
+        );
+      },
+    );
+  }
+
+  Widget _buildFilterSection() {
+    return Consumer<GameProvider>(
+      builder: (context, provider, _) {
+        return Container(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const Text(
+                    'Filter',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.textPrimary,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  if (provider.selectedGenre != 'All' || provider.showFavoritesOnly)
+                    TextButton.icon(
+                      onPressed: () {
+                        provider.clearFilters();
+                      },
+                      icon: const Icon(Icons.clear, size: 16),
+                      label: const Text('Reset'),
+                      style: TextButton.styleFrom(
+                        foregroundColor: AppTheme.primaryBlue,
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      ),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              SizedBox(
+                height: 50,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  children: [
+                    // Favorites filter
+                    _buildFilterButton(
+                      label: 'Favorit',
+                      icon: provider.showFavoritesOnly ? Icons.star : Icons.star_border,
+                      isSelected: provider.showFavoritesOnly,
+                      onTap: () => provider.toggleFavoritesFilter(),
+                      selectedColor: AppTheme.primaryYellow,
+                      backgroundColor: AppTheme.lightYellow,
+                    ),
+                    const SizedBox(width: 8),
+                    // Genre filters
+                    ...provider.genres.map((genre) {
+                      final isSelected = provider.selectedGenre == genre;
+                      final displayText = genre == 'All' ? 'Semua' : genre;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 8),
+                        child: _buildFilterButton(
+                          label: displayText,
+                          icon: _getGenreIcon(genre),
+                          isSelected: isSelected,
+                          onTap: () => provider.setGenreFilter(genre),
+                          selectedColor: AppTheme.primaryBlue,
+                          backgroundColor: AppTheme.lightBlue,
+                        ),
+                      );
+                    }),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildFilterButton({
+    required String label,
+    required IconData icon,
+    required bool isSelected,
+    required VoidCallback onTap,
+    required Color selectedColor,
+    required Color backgroundColor,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected ? selectedColor : backgroundColor,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected ? selectedColor : Colors.grey.shade300,
+            width: 1,
+          ),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon,
+              size: 16,
+              color: isSelected ? Colors.white : AppTheme.textPrimary,
+            ),
+            const SizedBox(width: 6),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                color: isSelected ? Colors.white : AppTheme.textPrimary,
+              ),
+            ),
+          ],
         ),
       ),
-<<<<<<< Updated upstream
-      floatingActionButton: ScaleTransition(
-        scale: CurvedAnimation(
-          parent: ModalRoute.of(context)!.animation!,
-          curve: Curves.elasticOut,
-        ),
-        child: FloatingActionButton.extended(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const AddEditGameScreen(),
-              ),
-            );
-          },
-          icon: const Icon(Icons.add_rounded, size: 28),
-          label: const Text(
-            'Tambah Game',
-=======
     );
   }
 
@@ -299,7 +559,9 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context, provider, _) {
         if (provider.isLoading) {
           return const Center(
-            child: CircularProgressIndicator(color: AppTheme.primaryBlue),
+            child: CircularProgressIndicator(
+              color: AppTheme.primaryBlue,
+            ),
           );
         }
 
@@ -388,18 +650,40 @@ class _HomeScreenState extends State<HomeScreen> {
           const SizedBox(height: 24),
           const Text(
             'Belum Ada Game',
->>>>>>> Stashed changes
             style: TextStyle(
+              fontSize: 24,
               fontWeight: FontWeight.bold,
-              fontSize: 16,
+              color: AppTheme.textPrimary,
             ),
           ),
-          backgroundColor: AppTheme.primaryYellow,
-          elevation: 8,
-        ),
+          const SizedBox(height: 8),
+          const Text(
+            'Tambahkan game favoritmu sekarang!',
+            style: TextStyle(
+              fontSize: 16,
+              color: AppTheme.textSecondary,
+            ),
+          ),
+          const SizedBox(height: 24),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const AddEditGameScreen(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.add),
+            label: const Text('Tambah Game'),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryYellow,
+              foregroundColor: AppTheme.textPrimary,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+            ),
+          ),
+        ],
       ),
     );
   }
-
-  // Rest of the class methods remain unchanged
-  // ... [Previous content remains identical]
+}
