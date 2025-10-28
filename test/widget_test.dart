@@ -1,6 +1,5 @@
 // GameOne Widget Test
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:game_one/main.dart';
 

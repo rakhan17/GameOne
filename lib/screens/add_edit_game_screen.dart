@@ -7,7 +7,7 @@ import '../utils/app_theme.dart';
 class AddEditGameScreen extends StatefulWidget {
   final Game? game;
 
-  const AddEditGameScreen({Key? key, this.game}) : super(key: key);
+  const AddEditGameScreen({super.key, this.game});
 
   @override
   State<AddEditGameScreen> createState() => _AddEditGameScreenState();
@@ -398,7 +398,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
         ],
       ),
       child: DropdownButtonFormField<String>(
-        value: value,
+        initialValue: value,
         decoration: InputDecoration(
           labelText: label,
           prefixIcon: Icon(icon, color: AppTheme.primaryBlue),

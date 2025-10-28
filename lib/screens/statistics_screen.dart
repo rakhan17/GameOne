@@ -4,7 +4,7 @@ import '../providers/game_provider.dart';
 import '../utils/app_theme.dart';
 
 class StatisticsScreen extends StatelessWidget {
-  const StatisticsScreen({Key? key}) : super(key: key);
+  const StatisticsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -436,7 +436,7 @@ class StatisticsScreen extends StatelessWidget {
                   ],
                 ),
               );
-            }).toList(),
+            }),
         ],
       ),
     );
@@ -677,7 +677,7 @@ class StatisticsScreen extends StatelessWidget {
                 ],
               ),
             );
-          }).toList(),
+          }),
         ],
       ),
     );

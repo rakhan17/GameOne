@@ -20,7 +20,7 @@ void main() {
 }
 
 class GameOneApp extends StatelessWidget {
-  const GameOneApp({Key? key}) : super(key: key);
+  const GameOneApp({super.key});
 
   @override
   Widget build(BuildContext context) {

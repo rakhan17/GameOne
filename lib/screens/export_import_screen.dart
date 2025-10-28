@@ -6,7 +6,7 @@ import '../services/json_export_service.dart';
 import '../utils/app_theme.dart';
 
 class ExportImportScreen extends StatefulWidget {
-  const ExportImportScreen({Key? key}) : super(key: key);
+  const ExportImportScreen({super.key});
 
   @override
   State<ExportImportScreen> createState() => _ExportImportScreenState();
