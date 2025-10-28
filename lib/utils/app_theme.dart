@@ -2,20 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
-  // Color Palette - Yellow and Blue Theme
-  static const Color primaryYellow = Color(0xFFFFD700);
-  static const Color lightYellow = Color(0xFFFFF9E6);
-  static const Color darkYellow = Color(0xFFFFB800);
+  // Color Palette - Enhanced Yellow and Blue Theme
+  static const Color primaryYellow = Color(0xFFFFC107);
+  static const Color lightYellow = Color(0xFFFFF8E1);
+  static const Color darkYellow = Color(0xFFFFA000);
   
-  static const Color primaryBlue = Color(0xFF2196F3);
+  static const Color primaryBlue = Color(0xFF1E88E5);
   static const Color lightBlue = Color(0xFFE3F2FD);
-  static const Color darkBlue = Color(0xFF1976D2);
+  static const Color darkBlue = Color(0xFF1565C0);
   static const Color accentBlue = Color(0xFF0D47A1);
   
   static const Color backgroundLight = Color(0xFFF5F8FA);
   static const Color cardBackground = Colors.white;
   static const Color textPrimary = Color(0xFF1A1A1A);
   static const Color textSecondary = Color(0xFF757575);
+  
+  // Additional accent colors
+  static const Color successGreen = Color(0xFF4CAF50);
+  static const Color errorRed = Color(0xFFF44336);
+  static const Color warningOrange = Color(0xFFFF9800);
   
   static ThemeData get lightTheme {
     return ThemeData(
