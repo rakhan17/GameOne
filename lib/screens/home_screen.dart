@@ -16,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
+  bool _isGrid = false;
 
   @override
   void initState() {
@@ -287,6 +288,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(width: 12),
+              // Grid/List toggle
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.primaryBlue.withOpacity(0.1),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: IconButton(
+                  tooltip: _isGrid ? 'Tampilkan List' : 'Tampilkan Grid',
+                  onPressed: () => setState(() => _isGrid = !_isGrid),
+                  icon: Icon(_isGrid ? Icons.view_list : Icons.grid_view, color: AppTheme.primaryBlue),
+                ),
+              ),
+              const SizedBox(width: 12),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -429,6 +450,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       ),
                     ),
+                  const Spacer(),
+                  TextButton.icon(
+                    onPressed: () => _openFilterSheet(context, provider),
+                    icon: const Icon(Icons.tune),
+                    label: const Text('Filter Lanjut'),
+                    style: TextButton.styleFrom(
+                      foregroundColor: AppTheme.primaryBlue,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(height: 12),
@@ -577,27 +607,153 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           color: AppTheme.primaryBlue,
           backgroundColor: Colors.white,
-          child: ListView.builder(
-            padding: const EdgeInsets.only(bottom: 80),
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemCount: games.length,
-            itemBuilder: (context, index) {
-              return TweenAnimationBuilder<double>(
-                duration: Duration(milliseconds: 200 + (index * 50)),
-                tween: Tween(begin: 0.0, end: 1.0),
-                curve: Curves.easeOut,
-                builder: (context, value, child) {
-                  return Transform.translate(
-                    offset: Offset(0, 20 * (1 - value)),
-                    child: Opacity(
-                      opacity: value,
-                      child: child,
-                    ),
-                  );
-                },
-                child: GameCard(game: games[index]),
-              );
-            },
+          child: _isGrid
+              ? LayoutBuilder(
+                  builder: (context, constraints) {
+                    final width = constraints.maxWidth;
+                    int crossAxisCount = 2;
+                    if (width >= 1200) {
+                      crossAxisCount = 5;
+                    } else if (width >= 900) {
+                      crossAxisCount = 4;
+                    } else if (width >= 700) {
+                      crossAxisCount = 3;
+                    }
+
+                    return GridView.builder(
+                      padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: crossAxisCount,
+                        mainAxisSpacing: 12,
+                        crossAxisSpacing: 12,
+                        childAspectRatio: 16 / 12,
+                      ),
+                      itemCount: games.length,
+                      itemBuilder: (context, index) {
+                        return GameCard(game: games[index], compact: true);
+                      },
+                    );
+                  },
+                )
+              : ListView.builder(
+                  padding: const EdgeInsets.only(bottom: 80),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: games.length,
+                  itemBuilder: (context, index) {
+                    return TweenAnimationBuilder<double>(
+                      duration: Duration(milliseconds: 200 + (index * 50)),
+                      tween: Tween(begin: 0.0, end: 1.0),
+                      curve: Curves.easeOut,
+                      builder: (context, value, child) {
+                        return Transform.translate(
+                          offset: Offset(0, 20 * (1 - value)),
+                          child: Opacity(
+                            opacity: value,
+                            child: child,
+                          ),
+                        );
+                      },
+                      child: GameCard(game: games[index]),
+                    );
+                  },
+                ),
+        );
+      },
+    );
+  }
+
+  void _openFilterSheet(BuildContext context, GameProvider provider) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        String tempGenre = provider.selectedGenre;
+        String tempStatus = provider.selectedStatus;
+        bool tempFav = provider.showFavoritesOnly;
+        String tempSort = provider.sortBy;
+
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom + 16,
+            left: 16,
+            right: 16,
+            top: 16,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: const [
+                  Icon(Icons.tune),
+                  SizedBox(width: 8),
+                  Text('Filter & Sort', style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600)),
+                ],
+              ),
+              const SizedBox(height: 16),
+              SwitchListTile(
+                value: tempFav,
+                title: const Text('Favorit saja'),
+                onChanged: (v) => tempFav = v,
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                value: tempGenre,
+                decoration: const InputDecoration(labelText: 'Genre'),
+                items: provider.genres.map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
+                onChanged: (v) => tempGenre = v ?? 'All',
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                value: tempStatus,
+                decoration: const InputDecoration(labelText: 'Status'),
+                items: provider.statuses.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
+                onChanged: (v) => tempStatus = v ?? 'All',
+              ),
+              const SizedBox(height: 8),
+              DropdownButtonFormField<String>(
+                value: tempSort,
+                decoration: const InputDecoration(labelText: 'Urutkan'),
+                items: const [
+                  DropdownMenuItem(value: 'dateAdded', child: Text('Terbaru')),
+                  DropdownMenuItem(value: 'title', child: Text('Nama (A-Z)')),
+                  DropdownMenuItem(value: 'rating', child: Text('Rating Tertinggi')),
+                  DropdownMenuItem(value: 'playtime', child: Text('Playtime Terbanyak')),
+                ],
+                onChanged: (v) => tempSort = v ?? 'dateAdded',
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text('Batal'),
+                  ),
+                  const Spacer(),
+                  ElevatedButton.icon(
+                    onPressed: () {
+                      provider.setSortBy(tempSort);
+                      provider.setGenreFilter(tempGenre);
+                      provider.setStatusFilter(tempStatus);
+                      if (provider.showFavoritesOnly != tempFav) {
+                        provider.toggleFavoritesFilter();
+                      }
+                      Navigator.pop(context);
+                    },
+                    icon: const Icon(Icons.check),
+                    label: const Text('Terapkan'),
+                    style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryBlue),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+            ],
           ),
         );
       },
