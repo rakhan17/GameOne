@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../utils/app_theme.dart';
+import '../providers/auth_provider.dart';
 import 'home_screen.dart';
+import 'login_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -28,19 +31,9 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
       duration: const Duration(milliseconds: 4000),
     )..repeat(reverse: true);
-    Future.delayed(const Duration(milliseconds: 7000), () {
-      if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder: (_, __, ___) => const HomeScreen(),
-          transitionsBuilder: (context, animation, secondary, child) {
-            final fade = CurvedAnimation(parent: animation, curve: Curves.easeInOut);
-            return FadeTransition(opacity: fade, child: child);
-          },
-          transitionDuration: const Duration(milliseconds: 450),
-        ),
-      );
-    });
+    
+    // Initialize auth and check login status
+    _initializeApp();
   }
 
   @override
@@ -48,6 +41,35 @@ class _SplashScreenState extends State<SplashScreen>
     _controller.dispose();
     _bgCtrl.dispose();
     super.dispose();
+  }
+
+  Future<void> _initializeApp() async {
+    // Wait for animation
+    await Future.delayed(const Duration(milliseconds: 3000));
+    
+    if (!mounted) return;
+    
+    // Check login status
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    await authProvider.initialize();
+    
+    if (!mounted) return;
+    
+    // Navigate based on login status
+    final targetScreen = authProvider.isLoggedIn 
+        ? const HomeScreen() 
+        : const LoginScreen();
+    
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (_, __, ___) => targetScreen,
+        transitionsBuilder: (context, animation, secondary, child) {
+          final fade = CurvedAnimation(parent: animation, curve: Curves.easeInOut);
+          return FadeTransition(opacity: fade, child: child);
+        },
+        transitionDuration: const Duration(milliseconds: 450),
+      ),
+    );
   }
 
   @override
@@ -175,7 +197,7 @@ class _SplashScreenState extends State<SplashScreen>
                   borderRadius: BorderRadius.circular(8),
                   child: TweenAnimationBuilder<double>(
                     tween: Tween(begin: 0, end: 1),
-                    duration: const Duration(milliseconds: 7000),
+                    duration: const Duration(milliseconds: 3000),
                     builder: (context, value, _) => LinearProgressIndicator(
                       value: value,
                       minHeight: 6,
