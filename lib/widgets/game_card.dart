@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../models/game.dart';
 import '../providers/game_provider.dart';
@@ -40,20 +39,17 @@ class GameCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Game Icon
+                    // Game cover or fallback icon
                     Container(
                       width: 60,
                       height: 60,
                       decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
-                        ),
                         borderRadius: BorderRadius.circular(12),
+                        color: Colors.transparent,
                       ),
-                      child: const Icon(
-                        Icons.gamepad,
-                        color: Colors.white,
-                        size: 32,
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: _buildCoverWidget(game.coverImage),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -445,6 +441,40 @@ class GameCard extends StatelessWidget {
           );
         }
       }),
+    );
+  }
+
+  Widget _buildCoverWidget(String? pathOrUrl) {
+    // Show cover image when available; fallback to a gamepad icon
+    if (pathOrUrl == null || pathOrUrl.isEmpty) {
+      return Container(
+        color: AppTheme.primaryBlue,
+        child: const Center(
+          child: Icon(Icons.gamepad, color: Colors.white, size: 32),
+        ),
+      );
+    }
+
+    final lower = pathOrUrl.toLowerCase();
+    final isNetworkish = lower.startsWith('http://') || lower.startsWith('https://') || lower.startsWith('data:') || lower.startsWith('blob:');
+
+    if (isNetworkish) {
+      return Image.network(
+        pathOrUrl,
+        fit: BoxFit.cover,
+        errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.broken_image)),
+        loadingBuilder: (context, child, progress) {
+          if (progress == null) return child;
+          return const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)));
+        },
+      );
+    }
+
+    // Local file/image handling (desktop/mobile). buildFileImage handles platform specifics.
+    return buildFileImage(
+      pathOrUrl,
+      fit: BoxFit.cover,
+      fallback: () => const Center(child: Icon(Icons.broken_image)),
     );
   }
 
