@@ -118,6 +118,8 @@ class GameProvider with ChangeNotifier {
     String notes = '',
     int playtimeHours = 0,
     List<String> tags = const [],
+    String? coverImage,
+    DateTime? completedDate,
   }) async {
     final newGame = Game(
       id: _uuid.v4(),
@@ -129,6 +131,8 @@ class GameProvider with ChangeNotifier {
       notes: notes,
       playtimeHours: playtimeHours,
       tags: tags,
+      coverImage: coverImage,
+      completedDate: completedDate ?? (status == 'Completed' ? DateTime.now() : null),
     );
 
     _games.add(newGame);

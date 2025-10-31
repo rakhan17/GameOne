@@ -1,137 +1,69 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import '../models/game.dart';
 import '../providers/game_provider.dart';
 import '../utils/app_theme.dart';
 import '../screens/add_edit_game_screen.dart';
+import '../utils/file_image.dart';
 
 class GameCard extends StatelessWidget {
   final Game game;
-
-  const GameCard({super.key, required this.game});
+  final bool compact;
+  const GameCard({super.key, required this.game, this.compact = false});
 
   @override
   Widget build(BuildContext context) {
-    return Dismissible(
-      key: Key(game.id),
-      direction: DismissDirection.endToStart,
-      background: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Colors.red, Colors.redAccent],
-          ),
-          borderRadius: BorderRadius.circular(16),
-        ),
-        alignment: Alignment.centerRight,
-        padding: const EdgeInsets.only(right: 24),
-        child: const Icon(
-          Icons.delete_sweep,
-          color: Colors.white,
-          size: 32,
-        ),
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      elevation: 4,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
       ),
-      confirmDismiss: (direction) async {
-        return await showDialog(
-          context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Konfirmasi Hapus'),
-            content: Text('Hapus "${game.title}" dari koleksi?'),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Batal'),
-              ),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context, true),
-                style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                child: const Text('Hapus'),
-              ),
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.white,
+              AppTheme.lightBlue.withOpacity(0.2),
             ],
           ),
-        );
-      },
-      onDismissed: (direction) {
-        context.read<GameProvider>().deleteGame(game.id);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('${game.title} telah dihapus'),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            action: SnackBarAction(
-              label: 'OK',
-              textColor: Colors.white,
-              onPressed: () {},
-            ),
-          ),
-        );
-      },
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        elevation: 4,
-        shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
         ),
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Colors.white,
-                AppTheme.lightBlue.withOpacity(0.2),
-              ],
-            ),
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: InkWell(
-            onTap: () {
-              _showGameDetails(context);
-            },
-            borderRadius: BorderRadius.circular(16),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Game Icon with Hero Animation
-                      Hero(
-                        tag: 'game_${game.id}',
-                        child: Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                AppTheme.primaryBlue,
-                                AppTheme.darkBlue,
-                              ],
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppTheme.primaryBlue.withOpacity(0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 3),
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.gamepad,
-                            color: Colors.white,
-                            size: 32,
-                          ),
+        child: InkWell(
+          onTap: () {
+            _showGameDetails(context);
+          },
+          borderRadius: BorderRadius.circular(16),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Game Icon
+                    Container(
+                      width: 60,
+                      height: 60,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            AppTheme.primaryBlue,
+                            AppTheme.darkBlue,
+                          ],
                         ),
+                        borderRadius: BorderRadius.circular(12),
                       ),
+                      child: const Icon(
+                        Icons.gamepad,
+                        color: Colors.white,
+                        size: 32,
+                      ),
+                    ),
                     const SizedBox(width: 16),
                     // Game Info
                     Expanded(
@@ -267,7 +199,6 @@ class GameCard extends StatelessWidget {
           ),
         ),
       ),
-    ),
     );
   }
 
@@ -338,33 +269,24 @@ class GameCard extends StatelessWidget {
               ),
             ),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Hero(
-                  tag: 'game_${game.id}',
-                  child: Container(
-                    width: 80,
-                    height: 80,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          AppTheme.primaryBlue,
-                          AppTheme.darkBlue,
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppTheme.primaryBlue.withOpacity(0.3),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
+                Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppTheme.primaryBlue,
+                        AppTheme.darkBlue,
                       ],
                     ),
-                    child: const Icon(
-                      Icons.gamepad,
-                      color: Colors.white,
-                      size: 48,
-                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Icon(
+                    Icons.gamepad,
+                    color: Colors.white,
+                    size: 48,
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -374,25 +296,12 @@ class GameCard extends StatelessWidget {
                     children: [
                       Text(
                         game.title,
-                        style: const TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          const Icon(Icons.star, color: AppTheme.primaryYellow, size: 20),
-                          const SizedBox(width: 4),
-                          Text(
-                            game.rating.toStringAsFixed(1),
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ],
-                      ),
+                      Row(children: [ _buildStars(), const SizedBox(width: 6), Text(game.rating.toStringAsFixed(1)) ]),
+                      const SizedBox(height: 6),
+                      _buildBadges(),
                     ],
                   ),
                 ),
@@ -506,6 +415,62 @@ class GameCard extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildStars() {
+    final fullStars = game.rating.floor();
+    final hasHalf = (game.rating - fullStars) >= 0.5;
+    final total = 5;
+    return Row(
+      children: List.generate(total, (index) {
+        if (index < fullStars) {
+          return const Icon(Icons.star, size: 18, color: AppTheme.primaryYellow);
+        } else if (index == fullStars && hasHalf) {
+          return const Icon(Icons.star_half, size: 18, color: AppTheme.primaryYellow);
+        } else {
+          return const Icon(Icons.star_border, size: 18, color: AppTheme.primaryYellow);
+        }
+      }),
+    );
+  }
+
+  Widget _buildBadges() {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: AppTheme.primaryYellow.withOpacity(0.2),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.category, size: 14, color: AppTheme.textPrimary),
+              const SizedBox(width: 4),
+              Text(game.genre, style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary)),
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+          decoration: BoxDecoration(
+            color: _getStatusColor(game.status).withOpacity(0.15),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.info_outline, size: 14, color: AppTheme.textPrimary),
+              const SizedBox(width: 4),
+              Text(game.status, style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary)),
+            ],
+          ),
         ),
       ],
     );

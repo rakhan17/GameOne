@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'providers/game_provider.dart';
-import 'screens/home_screen.dart';
+import 'screens/splash_screen.dart';
 import 'utils/app_theme.dart';
 
 void main() {
@@ -30,7 +30,7 @@ class GameOneApp extends StatelessWidget {
         title: 'GameOne',
         debugShowCheckedModeBanner: false,
         theme: AppTheme.lightTheme,
-        home: const HomeScreen(),
+        home: const SplashScreen(),
       ),
     );
   }
