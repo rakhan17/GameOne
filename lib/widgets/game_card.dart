@@ -26,15 +26,7 @@ class GameCard extends StatelessWidget {
         ),
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 24),
-<<<<<<< Updated upstream
-        child: const Icon(
-          Icons.delete_sweep,
-          color: Colors.white,
-          size: 32,
-        ),
-=======
         child: const Icon(Icons.delete_sweep, color: Colors.white, size: 32),
->>>>>>> Stashed changes
       ),
       confirmDismiss: (direction) async {
         return await showDialog(
@@ -80,26 +72,16 @@ class GameCard extends StatelessWidget {
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         elevation: 4,
-<<<<<<< Updated upstream
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-=======
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
->>>>>>> Stashed changes
         child: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-<<<<<<< Updated upstream
               colors: [
                 Colors.white,
                 AppTheme.lightBlue.withOpacity(0.2),
               ],
-=======
-              colors: [Colors.white, AppTheme.lightBlue.withOpacity(0.2)],
->>>>>>> Stashed changes
             ),
             borderRadius: BorderRadius.circular(16),
           ),
@@ -124,14 +106,10 @@ class GameCard extends StatelessWidget {
                           height: 60,
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
-<<<<<<< Updated upstream
                               colors: [
                                 AppTheme.primaryBlue,
                                 AppTheme.darkBlue,
                               ],
-=======
-                              colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
->>>>>>> Stashed changes
                             ),
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
@@ -239,13 +217,7 @@ class GameCard extends StatelessWidget {
                                           ),
                                           decoration: BoxDecoration(
                                             color: AppTheme.lightBlue,
-<<<<<<< Updated upstream
                                             borderRadius: BorderRadius.circular(8),
-=======
-                                            borderRadius: BorderRadius.circular(
-                                              8,
-                                            ),
->>>>>>> Stashed changes
                                           ),
                                           child: Text(
                                             name,
@@ -417,14 +389,10 @@ class GameCard extends StatelessWidget {
                     height: 80,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-<<<<<<< Updated upstream
                         colors: [
                           AppTheme.primaryBlue,
                           AppTheme.darkBlue,
                         ],
-=======
-                        colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
->>>>>>> Stashed changes
                       ),
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: [
@@ -480,27 +448,11 @@ class GameCard extends StatelessWidget {
             const SizedBox(height: 24),
             _buildDetailRow('Genre', game.genre, Icons.category),
             const SizedBox(height: 12),
-<<<<<<< Updated upstream
             _buildDetailRow('Platform', game.platform, _getPlatformIcon(game.platform)),
             const SizedBox(height: 12),
             _buildDetailRow('Status', game.status, Icons.info_outline),
             const SizedBox(height: 12),
             _buildDetailRow('Playtime', '${game.playtimeHours} jam', Icons.schedule),
-=======
-            _buildDetailRow(
-              'Platform',
-              game.platform,
-              _getPlatformIcon(game.platform),
-            ),
-            const SizedBox(height: 12),
-            _buildDetailRow('Status', game.status, Icons.info_outline),
-            const SizedBox(height: 12),
-            _buildDetailRow(
-              'Playtime',
-              '${game.playtimeHours} jam',
-              Icons.schedule,
-            ),
->>>>>>> Stashed changes
             if (game.notes.isNotEmpty) ...[
               const SizedBox(height: 16),
               const Text(

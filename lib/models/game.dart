@@ -12,6 +12,7 @@ class Game {
   final DateTime? completedDate;
   final List<String> tags;
   final String? coverImage;
+  final List<String> listIds; // NEW: IDs of custom lists this game belongs to
 
   Game({
     required this.id,
@@ -27,6 +28,7 @@ class Game {
     this.completedDate,
     this.tags = const [],
     this.coverImage,
+    this.listIds = const [], // NEW: Default to empty list
   }) : dateAdded = dateAdded ?? DateTime.now();
 
   // Convert Game to Map for storage
@@ -45,6 +47,7 @@ class Game {
       'completedDate': completedDate?.toIso8601String(),
       'tags': tags,
       'coverImage': coverImage,
+      'listIds': listIds, // NEW: Include listIds in JSON
     };
   }
 
@@ -59,18 +62,23 @@ class Game {
       isFavorite: json['isFavorite'] as bool? ?? false,
       status: json['status'] as String? ?? 'Not Started',
       notes: json['notes'] as String? ?? '',
-      playtimeHours: json['playtimeHours'] as int? ?? 
-                     (json['playtime'] as num?)?.toInt() ?? 0, // Support both field names
-      dateAdded: json['dateAdded'] != null 
+      playtimeHours:
+          json['playtimeHours'] as int? ??
+          (json['playtime'] as num?)?.toInt() ??
+          0, // Support both field names
+      dateAdded: json['dateAdded'] != null
           ? DateTime.parse(json['dateAdded'] as String)
           : DateTime.now(),
       completedDate: json['completedDate'] != null
           ? DateTime.parse(json['completedDate'] as String)
           : null,
-      tags: json['tags'] != null 
-          ? List<String>.from(json['tags'] as List)
-          : [],
+      tags: json['tags'] != null ? List<String>.from(json['tags'] as List) : [],
       coverImage: json['coverImage'] as String?,
+      listIds:
+          json['listIds'] !=
+              null // NEW: Parse listIds from JSON
+          ? List<String>.from(json['listIds'] as List)
+          : [],
     );
   }
 
@@ -89,6 +97,7 @@ class Game {
     DateTime? completedDate,
     List<String>? tags,
     String? coverImage,
+    List<String>? listIds, // NEW: Allow updating listIds
   }) {
     return Game(
       id: id ?? this.id,
@@ -104,13 +113,14 @@ class Game {
       completedDate: completedDate ?? this.completedDate,
       tags: tags ?? this.tags,
       coverImage: coverImage ?? this.coverImage,
+      listIds: listIds ?? this.listIds, // NEW: Copy listIds
     );
   }
 
   bool get isWishlist => status == 'Wishlist';
   bool get isCompleted => status == 'Completed' || status == 'Selesai';
   bool get isPlaying => status == 'Playing' || status == 'Sedang Dimainkan';
-  
+
   // Compatibility getters
   double get playtime => playtimeHours.toDouble();
   String get statusIndonesian {

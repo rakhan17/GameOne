@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 import '../models/game.dart';
+import '../models/custom_list.dart';
 import '../services/storage_service.dart';
 
 class GameProvider with ChangeNotifier {
@@ -8,6 +9,7 @@ class GameProvider with ChangeNotifier {
   final Uuid _uuid = const Uuid();
 
   List<Game> _games = [];
+  List<CustomList> _lists = []; // NEW: List of custom lists
   String _selectedGenre = 'All';
   String _selectedStatus = 'All';
   bool _showFavoritesOnly = false;
@@ -22,8 +24,8 @@ class GameProvider with ChangeNotifier {
     if (_searchQuery.isNotEmpty) {
       filteredGames = filteredGames.where((game) {
         return game.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               game.genre.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               game.platform.toLowerCase().contains(_searchQuery.toLowerCase());
+            game.genre.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+            game.platform.toLowerCase().contains(_searchQuery.toLowerCase());
       }).toList();
     }
 
@@ -34,12 +36,16 @@ class GameProvider with ChangeNotifier {
 
     // Filter by genre
     if (_selectedGenre != 'All') {
-      filteredGames = filteredGames.where((game) => game.genre == _selectedGenre).toList();
+      filteredGames = filteredGames
+          .where((game) => game.genre == _selectedGenre)
+          .toList();
     }
 
     // Filter by status
     if (_selectedStatus != 'All') {
-      filteredGames = filteredGames.where((game) => game.status == _selectedStatus).toList();
+      filteredGames = filteredGames
+          .where((game) => game.status == _selectedStatus)
+          .toList();
     }
 
     // Sort games
@@ -51,7 +57,9 @@ class GameProvider with ChangeNotifier {
         filteredGames.sort((a, b) => b.rating.compareTo(a.rating));
         break;
       case 'playtime':
-        filteredGames.sort((a, b) => b.playtimeHours.compareTo(a.playtimeHours));
+        filteredGames.sort(
+          (a, b) => b.playtimeHours.compareTo(a.playtimeHours),
+        );
         break;
       case 'dateAdded':
       default:
@@ -76,8 +84,11 @@ class GameProvider with ChangeNotifier {
   int get completedGames => _games.where((g) => g.isCompleted).length;
   int get playingGames => _games.where((g) => g.isPlaying).length;
   int get wishlistGames => _games.where((g) => g.isWishlist).length;
-  int get totalPlaytime => _games.fold(0, (sum, game) => sum + game.playtimeHours);
-  double get averageRating => _games.isEmpty ? 0 : _games.fold(0.0, (sum, game) => sum + game.rating) / _games.length;
+  int get totalPlaytime =>
+      _games.fold(0, (sum, game) => sum + game.playtimeHours);
+  double get averageRating => _games.isEmpty
+      ? 0
+      : _games.fold(0.0, (sum, game) => sum + game.rating) / _games.length;
 
   // Get all unique genres from games
   List<String> get genres {
@@ -88,20 +99,31 @@ class GameProvider with ChangeNotifier {
     return genreSet.toList();
   }
 
+  // Get all custom lists
+  List<CustomList> get lists => _lists;
+
   // Get all unique statuses
   List<String> get statuses {
-    return ['All', 'Playing', 'Completed', 'Not Started', 'On Hold', 'Wishlist'];
+    return [
+      'All',
+      'Playing',
+      'Completed',
+      'Not Started',
+      'On Hold',
+      'Wishlist',
+    ];
   }
 
-  // Load games from storage
+  // Load games and lists from storage
   Future<void> loadGames() async {
     _isLoading = true;
     notifyListeners();
 
     try {
       _games = await _storageService.loadGames();
+      _lists = await _storageService.loadLists(); // NEW: Load custom lists
     } catch (e) {
-      print('Error loading games: $e');
+      print('Error loading data: $e');
     }
 
     _isLoading = false;
@@ -285,7 +307,81 @@ class GameProvider with ChangeNotifier {
   // Clear all games
   Future<void> clearAllGames() async {
     _games.clear();
+    _lists.clear();
     await _storageService.clearGames();
+    notifyListeners();
+  }
+
+  // Add a game to a custom list
+  Future<void> addGameToList(String gameId, String listId) async {
+    final gameIndex = _games.indexWhere((g) => g.id == gameId);
+    if (gameIndex != -1) {
+      final game = _games[gameIndex];
+      if (!game.listIds.contains(listId)) {
+        _games[gameIndex] = game.copyWith(listIds: [...game.listIds, listId]);
+        await _storageService.saveGames(_games);
+        notifyListeners();
+      }
+    }
+  }
+
+  // Remove a game from a custom list
+  Future<void> removeGameFromList(String gameId, String listId) async {
+    final gameIndex = _games.indexWhere((g) => g.id == gameId);
+    if (gameIndex != -1) {
+      final game = _games[gameIndex];
+      if (game.listIds.contains(listId)) {
+        _games[gameIndex] = game.copyWith(
+          listIds: game.listIds.where((id) => id != listId).toList(),
+        );
+        await _storageService.saveGames(_games);
+        notifyListeners();
+      }
+    }
+  }
+
+  // Create a new custom list
+  Future<void> createList(String name, int colorValue) async {
+    final newList = CustomList(
+      id: _uuid.v4(),
+      name: name,
+      colorValue: colorValue,
+    );
+    _lists.add(newList);
+    await _storageService.saveLists(_lists);
+    notifyListeners();
+  }
+
+  // Update a custom list
+  Future<void> updateList(String id, {String? name, int? colorValue}) async {
+    final index = _lists.indexWhere((l) => l.id == id);
+    if (index != -1) {
+      final list = _lists[index];
+      _lists[index] = CustomList(
+        id: list.id,
+        name: name ?? list.name,
+        colorValue: colorValue ?? list.colorValue,
+      );
+      await _storageService.saveLists(_lists);
+      notifyListeners();
+    }
+  }
+
+  // Delete a custom list and remove its references
+  Future<void> deleteList(String id) async {
+    _lists.removeWhere((l) => l.id == id);
+    // Remove this list from all games
+    for (var i = 0; i < _games.length; i++) {
+      if (_games[i].listIds.contains(id)) {
+        _games[i] = _games[i].copyWith(
+          listIds: _games[i].listIds.where((listId) => listId != id).toList(),
+        );
+      }
+    }
+    await Future.wait([
+      _storageService.saveLists(_lists),
+      _storageService.saveGames(_games),
+    ]);
     notifyListeners();
   }
 }
