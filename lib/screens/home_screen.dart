@@ -702,21 +702,21 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                value: tempGenre,
+                initialValue: tempGenre,
                 decoration: const InputDecoration(labelText: 'Genre'),
                 items: provider.genres.map((g) => DropdownMenuItem(value: g, child: Text(g))).toList(),
                 onChanged: (v) => tempGenre = v ?? 'All',
               ),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                value: tempStatus,
+                initialValue: tempStatus,
                 decoration: const InputDecoration(labelText: 'Status'),
                 items: provider.statuses.map((s) => DropdownMenuItem(value: s, child: Text(s))).toList(),
                 onChanged: (v) => tempStatus = v ?? 'All',
               ),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                value: tempSort,
+                initialValue: tempSort,
                 decoration: const InputDecoration(labelText: 'Urutkan'),
                 items: const [
                   DropdownMenuItem(value: 'dateAdded', child: Text('Terbaru')),

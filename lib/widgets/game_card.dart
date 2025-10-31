@@ -17,18 +17,13 @@ class GameCard extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              Colors.white,
-              AppTheme.lightBlue.withOpacity(0.2),
-            ],
+            colors: [Colors.white, AppTheme.lightBlue.withOpacity(0.2)],
           ),
           borderRadius: BorderRadius.circular(16),
         ),
@@ -51,10 +46,7 @@ class GameCard extends StatelessWidget {
                       height: 60,
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [
-                            AppTheme.primaryBlue,
-                            AppTheme.darkBlue,
-                          ],
+                          colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
                         ),
                         borderRadius: BorderRadius.circular(12),
                       ),
@@ -162,11 +154,7 @@ class GameCard extends StatelessWidget {
                       ),
                     ),
                     if (game.playtimeHours > 0) ...[
-                      const Icon(
-                        Icons.schedule,
-                        size: 16,
-                        color: Colors.green,
-                      ),
+                      const Icon(Icons.schedule, size: 16, color: Colors.green),
                       const SizedBox(width: 4),
                       Text(
                         '${game.playtimeHours}h',
@@ -276,10 +264,7 @@ class GameCard extends StatelessWidget {
                   height: 80,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [
-                        AppTheme.primaryBlue,
-                        AppTheme.darkBlue,
-                      ],
+                      colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
                     ),
                     borderRadius: BorderRadius.circular(16),
                   ),
@@ -296,10 +281,19 @@ class GameCard extends StatelessWidget {
                     children: [
                       Text(
                         game.title,
-                        style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                        style: const TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                       const SizedBox(height: 8),
-                      Row(children: [ _buildStars(), const SizedBox(width: 6), Text(game.rating.toStringAsFixed(1)) ]),
+                      Row(
+                        children: [
+                          _buildStars(),
+                          const SizedBox(width: 6),
+                          Text(game.rating.toStringAsFixed(1)),
+                        ],
+                      ),
                       const SizedBox(height: 6),
                       _buildBadges(),
                     ],
@@ -310,11 +304,19 @@ class GameCard extends StatelessWidget {
             const SizedBox(height: 24),
             _buildDetailRow('Genre', game.genre, Icons.category),
             const SizedBox(height: 12),
-            _buildDetailRow('Platform', game.platform, _getPlatformIcon(game.platform)),
+            _buildDetailRow(
+              'Platform',
+              game.platform,
+              _getPlatformIcon(game.platform),
+            ),
             const SizedBox(height: 12),
             _buildDetailRow('Status', game.status, Icons.info_outline),
             const SizedBox(height: 12),
-            _buildDetailRow('Playtime', '${game.playtimeHours} jam', Icons.schedule),
+            _buildDetailRow(
+              'Playtime',
+              '${game.playtimeHours} jam',
+              Icons.schedule,
+            ),
             if (game.notes.isNotEmpty) ...[
               const SizedBox(height: 16),
               const Text(
@@ -409,10 +411,7 @@ class GameCard extends StatelessWidget {
             ),
             Text(
               value,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-              ),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
             ),
           ],
         ),
@@ -427,11 +426,23 @@ class GameCard extends StatelessWidget {
     return Row(
       children: List.generate(total, (index) {
         if (index < fullStars) {
-          return const Icon(Icons.star, size: 18, color: AppTheme.primaryYellow);
+          return const Icon(
+            Icons.star,
+            size: 18,
+            color: AppTheme.primaryYellow,
+          );
         } else if (index == fullStars && hasHalf) {
-          return const Icon(Icons.star_half, size: 18, color: AppTheme.primaryYellow);
+          return const Icon(
+            Icons.star_half,
+            size: 18,
+            color: AppTheme.primaryYellow,
+          );
         } else {
-          return const Icon(Icons.star_border, size: 18, color: AppTheme.primaryYellow);
+          return const Icon(
+            Icons.star_border,
+            size: 18,
+            color: AppTheme.primaryYellow,
+          );
         }
       }),
     );
@@ -453,7 +464,13 @@ class GameCard extends StatelessWidget {
             children: [
               const Icon(Icons.category, size: 14, color: AppTheme.textPrimary),
               const SizedBox(width: 4),
-              Text(game.genre, style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary)),
+              Text(
+                game.genre,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
             ],
           ),
         ),
@@ -466,9 +483,19 @@ class GameCard extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.info_outline, size: 14, color: AppTheme.textPrimary),
+              const Icon(
+                Icons.info_outline,
+                size: 14,
+                color: AppTheme.textPrimary,
+              ),
               const SizedBox(width: 4),
-              Text(game.status, style: const TextStyle(fontSize: 12, color: AppTheme.textPrimary)),
+              Text(
+                game.status,
+                style: const TextStyle(
+                  fontSize: 12,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
             ],
           ),
         ),
@@ -482,9 +509,7 @@ class GameCard extends StatelessWidget {
       builder: (context) => AlertDialog(
         title: const Text('Konfirmasi Hapus'),
         content: Text('Apakah Anda yakin ingin menghapus "${game.title}"?'),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -505,9 +530,7 @@ class GameCard extends StatelessWidget {
                 ),
               );
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
+            style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
             child: const Text('Hapus'),
           ),
         ],

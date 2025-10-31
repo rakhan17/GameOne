@@ -437,8 +437,9 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
         // try infer mime from name
         final name = picked.name.toLowerCase();
         String mime = 'image/jpeg';
-        if (name.endsWith('.png')) mime = 'image/png';
-        else if (name.endsWith('.webp')) mime = 'image/webp';
+        if (name.endsWith('.png')) {
+          mime = 'image/png';
+        } else if (name.endsWith('.webp')) mime = 'image/webp';
         else if (name.endsWith('.jpg') || name.endsWith('.jpeg')) mime = 'image/jpeg';
         setState(() {
           _coverUrl = 'data:$mime;base64,$b64';
