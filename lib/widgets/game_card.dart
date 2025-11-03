@@ -40,6 +40,7 @@ class GameCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+<<<<<<< HEAD
                     // Game Icon
                     Container(
                       width: 60,
@@ -56,6 +57,10 @@ class GameCard extends StatelessWidget {
                         size: 32,
                       ),
                     ),
+=======
+                    // Cover or Icon
+                    _buildCoverOrIcon(game.coverImage),
+>>>>>>> f242a9e (fix image)
                     const SizedBox(width: 16),
                     // Game Info
                     Expanded(
@@ -224,6 +229,54 @@ class GameCard extends StatelessWidget {
       default:
         return Colors.grey;
     }
+  }
+
+  Widget _buildCoverOrIcon(String? cover) {
+    final border = BorderRadius.circular(12);
+    Widget buildFallback() => _buildIconBox();
+    if (cover != null && cover.isNotEmpty) {
+      final isNetworkish = cover.startsWith('http://') ||
+          cover.startsWith('https://') ||
+          cover.startsWith('blob:') ||
+          cover.startsWith('data:');
+      return ClipRRect(
+        borderRadius: border,
+        child: SizedBox(
+          width: 60,
+          height: 60,
+          child: isNetworkish
+              ? Image.network(
+                  cover,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => buildFallback(),
+                )
+              : buildFileImage(
+                  cover,
+                  fit: BoxFit.cover,
+                  fallback: () => buildFallback(),
+                ),
+        ),
+      );
+    }
+    return _buildIconBox();
+  }
+
+  Widget _buildIconBox() {
+    return Container(
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: const Icon(
+        Icons.gamepad,
+        color: Colors.white,
+        size: 32,
+      ),
+    );
   }
 
   void _showGameDetails(BuildContext context) {

@@ -709,7 +709,13 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
           ),
         ],
       ),
-      child: Row(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          final w = constraints.maxWidth;
+          final isNarrow = w < 360;
+          final titleSize = isNarrow ? 20.0 : 24.0;
+          final subtitleSize = isNarrow ? 12.0 : 14.0;
+          return Row(
         children: [
           IconButton(
             onPressed: _handleBack,
@@ -735,16 +741,20 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
               children: [
                 Text(
                   _isEditing ? 'Edit Game' : 'Tambah Game',
-                  style: const TextStyle(
-                    fontSize: 24,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: titleSize,
                     fontWeight: FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),
                 Text(
                   _isEditing ? 'Ubah informasi game' : 'Tambah game ke koleksi',
-                  style: const TextStyle(
-                    fontSize: 14,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    fontSize: subtitleSize,
                     color: Colors.white70,
                   ),
                 ),
@@ -752,6 +762,8 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
             ),
           ),
         ],
+          );
+        },
       ),
     );
   }
