@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/game.dart';
 
@@ -15,7 +16,7 @@ class StorageService {
       final jsonString = jsonEncode(gamesJson);
       await prefs.setString(_gamesKey, jsonString);
     } catch (e) {
-      print('Error saving games: $e');
+      debugPrint('Error saving games: $e');
       rethrow;
     }
   }
@@ -25,7 +26,7 @@ class StorageService {
     try {
       final prefs = await SharedPreferences.getInstance();
       final jsonString = prefs.getString(_gamesKey);
-      
+
       if (jsonString == null || jsonString.isEmpty) {
         return [];
       }
@@ -33,7 +34,7 @@ class StorageService {
       final List<dynamic> gamesJson = jsonDecode(jsonString);
       return gamesJson.map((json) => Game.fromJson(json)).toList();
     } catch (e) {
-      print('Error loading games: $e');
+      debugPrint('Error loading games: $e');
       return [];
     }
   }
@@ -44,7 +45,7 @@ class StorageService {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(_gamesKey);
     } catch (e) {
-      print('Error clearing games: $e');
+      debugPrint('Error clearing games: $e');
     }
   }
 
@@ -91,14 +92,14 @@ class StorageService {
   List<Game> importGames(String jsonData) {
     try {
       final dynamic data = jsonDecode(jsonData);
-      
+
       // Check if it's the new format with app_info
-      if (data is Map<String, dynamic> && 
-          data.containsKey('games') && 
+      if (data is Map<String, dynamic> &&
+          data.containsKey('games') &&
           data.containsKey('app_info')) {
         final List<dynamic> gamesJson = data['games'];
         return gamesJson.map((json) => Game.fromJson(json)).toList();
-      } 
+      }
       // Handle old format (direct array)
       else if (data is List) {
         return data.map((json) => Game.fromJson(json)).toList();
@@ -107,8 +108,7 @@ class StorageService {
       else if (data is Map<String, dynamic> && data.containsKey('games')) {
         final List<dynamic> gamesJson = data['games'];
         return gamesJson.map((json) => Game.fromJson(json)).toList();
-      }
-      else {
+      } else {
         throw Exception('Unrecognized JSON format');
       }
     } catch (e) {
@@ -133,10 +133,10 @@ class StorageService {
   bool validateJsonData(String jsonData) {
     try {
       final dynamic data = jsonDecode(jsonData);
-      
+
       // Check new format
-      if (data is Map<String, dynamic> && 
-          data.containsKey('games') && 
+      if (data is Map<String, dynamic> &&
+          data.containsKey('games') &&
           data.containsKey('app_info')) {
         final games = data['games'];
         return games is List && games.isNotEmpty;
@@ -144,12 +144,11 @@ class StorageService {
       // Check old formats
       else if (data is List) {
         return data.isNotEmpty;
-      }
-      else if (data is Map<String, dynamic> && data.containsKey('games')) {
+      } else if (data is Map<String, dynamic> && data.containsKey('games')) {
         final games = data['games'];
         return games is List;
       }
-      
+
       return false;
     } catch (e) {
       return false;
@@ -173,7 +172,7 @@ class StorageService {
       'data': {
         'games_count': games.length,
         'games': games.map((game) => game.toJson()).toList(),
-      }
+      },
     };
     return jsonEncode(backupData);
   }
@@ -182,9 +181,9 @@ class StorageService {
   List<Game> restoreFromBackup(String backupData) {
     try {
       final dynamic data = jsonDecode(backupData);
-      
-      if (data is Map<String, dynamic> && 
-          data.containsKey('data') && 
+
+      if (data is Map<String, dynamic> &&
+          data.containsKey('data') &&
           data.containsKey('backup_info')) {
         final gameData = data['data'];
         if (gameData is Map<String, dynamic> && gameData.containsKey('games')) {
@@ -192,7 +191,7 @@ class StorageService {
           return gamesJson.map((json) => Game.fromJson(json)).toList();
         }
       }
-      
+
       throw Exception('Invalid backup format');
     } catch (e) {
       throw Exception('Failed to restore backup: $e');

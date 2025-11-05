@@ -22,8 +22,8 @@ class GameProvider with ChangeNotifier {
     if (_searchQuery.isNotEmpty) {
       filteredGames = filteredGames.where((game) {
         return game.title.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               game.genre.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-               game.platform.toLowerCase().contains(_searchQuery.toLowerCase());
+            game.genre.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+            game.platform.toLowerCase().contains(_searchQuery.toLowerCase());
       }).toList();
     }
 
@@ -34,12 +34,16 @@ class GameProvider with ChangeNotifier {
 
     // Filter by genre
     if (_selectedGenre != 'All') {
-      filteredGames = filteredGames.where((game) => game.genre == _selectedGenre).toList();
+      filteredGames = filteredGames
+          .where((game) => game.genre == _selectedGenre)
+          .toList();
     }
 
     // Filter by status
     if (_selectedStatus != 'All') {
-      filteredGames = filteredGames.where((game) => game.status == _selectedStatus).toList();
+      filteredGames = filteredGames
+          .where((game) => game.status == _selectedStatus)
+          .toList();
     }
 
     // Sort games
@@ -51,7 +55,9 @@ class GameProvider with ChangeNotifier {
         filteredGames.sort((a, b) => b.rating.compareTo(a.rating));
         break;
       case 'playtime':
-        filteredGames.sort((a, b) => b.playtimeHours.compareTo(a.playtimeHours));
+        filteredGames.sort(
+          (a, b) => b.playtimeHours.compareTo(a.playtimeHours),
+        );
         break;
       case 'dateAdded':
       default:
@@ -76,8 +82,11 @@ class GameProvider with ChangeNotifier {
   int get completedGames => _games.where((g) => g.isCompleted).length;
   int get playingGames => _games.where((g) => g.isPlaying).length;
   int get wishlistGames => _games.where((g) => g.isWishlist).length;
-  int get totalPlaytime => _games.fold(0, (sum, game) => sum + game.playtimeHours);
-  double get averageRating => _games.isEmpty ? 0 : _games.fold(0.0, (sum, game) => sum + game.rating) / _games.length;
+  int get totalPlaytime =>
+      _games.fold(0, (sum, game) => sum + game.playtimeHours);
+  double get averageRating => _games.isEmpty
+      ? 0
+      : _games.fold(0.0, (sum, game) => sum + game.rating) / _games.length;
 
   // Get all unique genres from games
   List<String> get genres {
@@ -90,7 +99,14 @@ class GameProvider with ChangeNotifier {
 
   // Get all unique statuses
   List<String> get statuses {
-    return ['All', 'Playing', 'Completed', 'Not Started', 'On Hold', 'Wishlist'];
+    return [
+      'All',
+      'Playing',
+      'Completed',
+      'Not Started',
+      'On Hold',
+      'Wishlist',
+    ];
   }
 
   // Load games from storage
@@ -101,7 +117,7 @@ class GameProvider with ChangeNotifier {
     try {
       _games = await _storageService.loadGames();
     } catch (e) {
-      print('Error loading games: $e');
+      debugPrint('Error loading games: $e');
     }
 
     _isLoading = false;
@@ -132,7 +148,8 @@ class GameProvider with ChangeNotifier {
       playtimeHours: playtimeHours,
       tags: tags,
       coverImage: coverImage,
-      completedDate: completedDate ?? (status == 'Completed' ? DateTime.now() : null),
+      completedDate:
+          completedDate ?? (status == 'Completed' ? DateTime.now() : null),
     );
 
     _games.add(newGame);

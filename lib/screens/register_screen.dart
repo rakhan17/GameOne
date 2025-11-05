@@ -4,13 +4,14 @@ import '../providers/auth_provider.dart';
 import '../utils/app_theme.dart';
 
 class RegisterScreen extends StatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({super.key});
 
   @override
   State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStateMixin {
+class _RegisterScreenState extends State<RegisterScreen>
+    with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _fullNameController = TextEditingController();
@@ -20,7 +21,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _agreeToTerms = false;
-  
+
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
@@ -56,7 +57,9 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
           content: const Text('Anda harus menyetujui syarat dan ketentuan'),
           backgroundColor: Colors.orange,
           behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
         ),
       );
       return;
@@ -64,17 +67,19 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
 
     if (_formKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      
+
       final result = await authProvider.register(
         username: _usernameController.text.trim(),
         email: _emailController.text.trim(),
         password: _passwordController.text,
-        fullName: _fullNameController.text.trim().isEmpty 
-            ? null 
+        fullName: _fullNameController.text.trim().isEmpty
+            ? null
             : _fullNameController.text.trim(),
       );
 
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
 
       if (result['success']) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -82,10 +87,12 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
             content: Text(result['message']),
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         );
-        
+
         // Navigate back to login
         Future.delayed(const Duration(seconds: 1), () {
           if (mounted) {
@@ -98,7 +105,9 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
             content: Text(result['message']),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         );
       }
@@ -108,17 +117,14 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              AppTheme.primaryBlue,
-              AppTheme.darkBlue,
-            ],
+            colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
           ),
         ),
         child: SafeArea(
@@ -136,7 +142,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                   ],
                 ),
               ),
-              
+
               Expanded(
                 child: Center(
                   child: SingleChildScrollView(
@@ -168,7 +174,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                             ),
                           ),
                           const SizedBox(height: 20),
-                          
+
                           // Title
                           const Text(
                             'Buat Akun Baru',
@@ -187,7 +193,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                             ),
                           ),
                           const SizedBox(height: 32),
-                          
+
                           // Register Form Card
                           Container(
                             padding: const EdgeInsets.all(24),
@@ -212,13 +218,17 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                     controller: _usernameController,
                                     decoration: InputDecoration(
                                       labelText: 'Username *',
-                                      prefixIcon: const Icon(Icons.person_outline),
+                                      prefixIcon: const Icon(
+                                        Icons.person_outline,
+                                      ),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
@@ -239,19 +249,23 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                     },
                                   ),
                                   const SizedBox(height: 16),
-                                  
+
                                   // Full Name Field (Optional)
                                   TextFormField(
                                     controller: _fullNameController,
                                     decoration: InputDecoration(
                                       labelText: 'Nama Lengkap (opsional)',
-                                      prefixIcon: const Icon(Icons.badge_outlined),
+                                      prefixIcon: const Icon(
+                                        Icons.badge_outlined,
+                                      ),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
@@ -263,20 +277,24 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                     ),
                                   ),
                                   const SizedBox(height: 16),
-                                  
+
                                   // Email Field
                                   TextFormField(
                                     controller: _emailController,
                                     keyboardType: TextInputType.emailAddress,
                                     decoration: InputDecoration(
                                       labelText: 'Email *',
-                                      prefixIcon: const Icon(Icons.email_outlined),
+                                      prefixIcon: const Icon(
+                                        Icons.email_outlined,
+                                      ),
                                       border: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
@@ -290,22 +308,25 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                       if (value == null || value.isEmpty) {
                                         return 'Email harus diisi';
                                       }
-                                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                          .hasMatch(value)) {
+                                      if (!RegExp(
+                                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                                      ).hasMatch(value)) {
                                         return 'Format email tidak valid';
                                       }
                                       return null;
                                     },
                                   ),
                                   const SizedBox(height: 16),
-                                  
+
                                   // Password Field
                                   TextFormField(
                                     controller: _passwordController,
                                     obscureText: _obscurePassword,
                                     decoration: InputDecoration(
                                       labelText: 'Password *',
-                                      prefixIcon: const Icon(Icons.lock_outline),
+                                      prefixIcon: const Icon(
+                                        Icons.lock_outline,
+                                      ),
                                       suffixIcon: IconButton(
                                         icon: Icon(
                                           _obscurePassword
@@ -314,7 +335,8 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                         ),
                                         onPressed: () {
                                           setState(() {
-                                            _obscurePassword = !_obscurePassword;
+                                            _obscurePassword =
+                                                !_obscurePassword;
                                           });
                                         },
                                       ),
@@ -323,7 +345,9 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
@@ -344,14 +368,16 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                     },
                                   ),
                                   const SizedBox(height: 16),
-                                  
+
                                   // Confirm Password Field
                                   TextFormField(
                                     controller: _confirmPasswordController,
                                     obscureText: _obscureConfirmPassword,
                                     decoration: InputDecoration(
                                       labelText: 'Konfirmasi Password *',
-                                      prefixIcon: const Icon(Icons.lock_outline),
+                                      prefixIcon: const Icon(
+                                        Icons.lock_outline,
+                                      ),
                                       suffixIcon: IconButton(
                                         icon: Icon(
                                           _obscureConfirmPassword
@@ -360,7 +386,8 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                         ),
                                         onPressed: () {
                                           setState(() {
-                                            _obscureConfirmPassword = !_obscureConfirmPassword;
+                                            _obscureConfirmPassword =
+                                                !_obscureConfirmPassword;
                                           });
                                         },
                                       ),
@@ -369,7 +396,9 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                       ),
                                       enabledBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
-                                        borderSide: BorderSide(color: Colors.grey.shade300),
+                                        borderSide: BorderSide(
+                                          color: Colors.grey.shade300,
+                                        ),
                                       ),
                                       focusedBorder: OutlineInputBorder(
                                         borderRadius: BorderRadius.circular(12),
@@ -390,7 +419,7 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                     },
                                   ),
                                   const SizedBox(height: 16),
-                                  
+
                                   // Terms & Conditions
                                   Row(
                                     children: [
@@ -419,14 +448,18 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                     ],
                                   ),
                                   const SizedBox(height: 24),
-                                  
+
                                   // Register Button
                                   ElevatedButton(
-                                    onPressed: authProvider.isLoading ? null : _handleRegister,
+                                    onPressed: authProvider.isLoading
+                                        ? null
+                                        : _handleRegister,
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: AppTheme.primaryBlue,
                                       foregroundColor: Colors.white,
-                                      padding: const EdgeInsets.symmetric(vertical: 16),
+                                      padding: const EdgeInsets.symmetric(
+                                        vertical: 16,
+                                      ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(12),
                                       ),
@@ -438,9 +471,10 @@ class _RegisterScreenState extends State<RegisterScreen> with TickerProviderStat
                                             width: 20,
                                             child: CircularProgressIndicator(
                                               strokeWidth: 2,
-                                              valueColor: AlwaysStoppedAnimation<Color>(
-                                                Colors.white,
-                                              ),
+                                              valueColor:
+                                                  AlwaysStoppedAnimation<Color>(
+                                                    Colors.white,
+                                                  ),
                                             ),
                                           )
                                         : const Text(

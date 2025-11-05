@@ -31,7 +31,7 @@ class _SplashScreenState extends State<SplashScreen>
       vsync: this,
       duration: const Duration(milliseconds: 4000),
     )..repeat(reverse: true);
-    
+
     // Initialize auth and check login status
     _initializeApp();
   }
@@ -46,25 +46,32 @@ class _SplashScreenState extends State<SplashScreen>
   Future<void> _initializeApp() async {
     // Wait for animation
     await Future.delayed(const Duration(milliseconds: 3000));
-    
-    if (!mounted) return;
-    
+
+    if (!mounted) {
+      return;
+    }
+
     // Check login status
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     await authProvider.initialize();
-    
-    if (!mounted) return;
-    
+
+    if (!mounted) {
+      return;
+    }
+
     // Navigate based on login status
-    final targetScreen = authProvider.isLoggedIn 
-        ? const HomeScreen() 
+    final targetScreen = authProvider.isLoggedIn
+        ? const HomeScreen()
         : const LoginScreen();
-    
+
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (_, __, ___) => targetScreen,
         transitionsBuilder: (context, animation, secondary, child) {
-          final fade = CurvedAnimation(parent: animation, curve: Curves.easeInOut);
+          final fade = CurvedAnimation(
+            parent: animation,
+            curve: Curves.easeInOut,
+          );
           return FadeTransition(opacity: fade, child: child);
         },
         transitionDuration: const Duration(milliseconds: 450),
@@ -78,16 +85,17 @@ class _SplashScreenState extends State<SplashScreen>
       body: AnimatedBuilder(
         animation: _bgCtrl,
         builder: (context, _) {
-          final align = Alignment.lerp(Alignment.topLeft, Alignment.bottomRight, _bgCtrl.value)!;
+          final align = Alignment.lerp(
+            Alignment.topLeft,
+            Alignment.bottomRight,
+            _bgCtrl.value,
+          )!;
           return Container(
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: align,
                 end: -align,
-                colors: const [
-                  AppTheme.primaryBlue,
-                  AppTheme.darkBlue,
-                ],
+                colors: const [AppTheme.primaryBlue, AppTheme.darkBlue],
               ),
             ),
             child: Stack(
@@ -112,103 +120,113 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                 ),
                 Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ScaleTransition(
-                scale: _scale,
-                child: Container(
-                  width: 96,
-                  height: 96,
-                  decoration: BoxDecoration(
-                    color: AppTheme.primaryYellow,
-                    borderRadius: BorderRadius.circular(24),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.18),
-                        blurRadius: 20,
-                        offset: const Offset(0, 10),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ScaleTransition(
+                        scale: _scale,
+                        child: Container(
+                          width: 96,
+                          height: 96,
+                          decoration: BoxDecoration(
+                            color: AppTheme.primaryYellow,
+                            borderRadius: BorderRadius.circular(24),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.18),
+                                blurRadius: 20,
+                                offset: const Offset(0, 10),
+                              ),
+                              BoxShadow(
+                                color: AppTheme.primaryYellow.withOpacity(0.4),
+                                blurRadius: 24,
+                                spreadRadius: 2,
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.sports_esports,
+                            size: 54,
+                            color: AppTheme.textPrimary,
+                          ),
+                        ),
                       ),
-                      BoxShadow(
-                        color: AppTheme.primaryYellow.withOpacity(0.4),
-                        blurRadius: 24,
-                        spreadRadius: 2,
-                      )
+                      const SizedBox(height: 18),
+                      const Text(
+                        'GameOne',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 28,
+                          fontWeight: FontWeight.w800,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      const Text(
+                        'Track  •  Rate  •  Enjoy',
+                        style: TextStyle(
+                          color: Colors.white70,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 6,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(999),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: const [
+                            SizedBox(
+                              width: 14,
+                              height: 14,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Colors.white,
+                                ),
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'Loading...',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: 180,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: TweenAnimationBuilder<double>(
+                            tween: Tween(begin: 0, end: 1),
+                            duration: const Duration(milliseconds: 3000),
+                            builder: (context, value, _) =>
+                                LinearProgressIndicator(
+                                  value: value,
+                                  minHeight: 6,
+                                  backgroundColor: Colors.white.withOpacity(
+                                    0.2,
+                                  ),
+                                  valueColor:
+                                      const AlwaysStoppedAnimation<Color>(
+                                        AppTheme.primaryYellow,
+                                      ),
+                                ),
+                          ),
+                        ),
+                      ),
                     ],
                   ),
-                  child: const Icon(
-                    Icons.sports_esports,
-                    size: 54,
-                    color: AppTheme.textPrimary,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 18),
-              const Text(
-                'GameOne',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: 0.5,
-                ),
-              ),
-              const SizedBox(height: 6),
-              const Text(
-                'Track  •  Rate  •  Enjoy',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  letterSpacing: 0.3,
-                ),
-              ),
-              const SizedBox(height: 8),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(999),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: const [
-                    SizedBox(
-                      width: 14,
-                      height: 14,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'Loading...'
-                      ,
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 12),
-              SizedBox(
-                width: 180,
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0, end: 1),
-                    duration: const Duration(milliseconds: 3000),
-                    builder: (context, value, _) => LinearProgressIndicator(
-                      value: value,
-                      minHeight: 6,
-                      backgroundColor: Colors.white.withOpacity(0.2),
-                      valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primaryYellow),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
                 ),
               ],
             ),

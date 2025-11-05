@@ -6,19 +6,20 @@ import 'register_screen.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
+class _LoginScreenState extends State<LoginScreen>
+    with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _rememberMe = false;
-  
+
   late AnimationController _fadeController;
   late Animation<double> _fadeAnimation;
 
@@ -47,13 +48,15 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   Future<void> _handleLogin() async {
     if (_formKey.currentState!.validate()) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      
+
       final result = await authProvider.login(
         usernameOrEmail: _usernameController.text.trim(),
         password: _passwordController.text,
       );
 
-      if (!mounted) return;
+      if (!mounted) {
+        return;
+      }
 
       if (result['success']) {
         Navigator.of(context).pushReplacement(
@@ -65,7 +68,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
             content: Text(result['message']),
             backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         );
       }
@@ -75,17 +80,14 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
-    
+
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [
-              AppTheme.primaryBlue,
-              AppTheme.darkBlue,
-            ],
+            colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
           ),
         ),
         child: SafeArea(
@@ -124,7 +126,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                       ),
                     ),
                     const SizedBox(height: 24),
-                    
+
                     // Title
                     const Text(
                       'GameOne',
@@ -138,13 +140,10 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     const SizedBox(height: 8),
                     const Text(
                       'Selamat datang kembali!',
-                      style: TextStyle(
-                        color: Colors.white70,
-                        fontSize: 16,
-                      ),
+                      style: TextStyle(color: Colors.white70, fontSize: 16),
                     ),
                     const SizedBox(height: 48),
-                    
+
                     // Login Form Card
                     Container(
                       padding: const EdgeInsets.all(24),
@@ -175,7 +174,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey.shade300),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade300,
+                                  ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -193,7 +194,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                               },
                             ),
                             const SizedBox(height: 16),
-                            
+
                             // Password Field
                             TextFormField(
                               controller: _passwordController,
@@ -218,7 +219,9 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                 ),
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
-                                  borderSide: BorderSide(color: Colors.grey.shade300),
+                                  borderSide: BorderSide(
+                                    color: Colors.grey.shade300,
+                                  ),
                                 ),
                                 focusedBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
@@ -236,7 +239,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                               },
                             ),
                             const SizedBox(height: 12),
-                            
+
                             // Remember Me & Forgot Password
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -260,26 +263,34 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                     // TODO: Implement forgot password
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: Text('Fitur lupa password segera hadir'),
+                                        content: Text(
+                                          'Fitur lupa password segera hadir',
+                                        ),
                                       ),
                                     );
                                   },
                                   child: const Text(
                                     'Lupa password?',
-                                    style: TextStyle(color: AppTheme.primaryBlue),
+                                    style: TextStyle(
+                                      color: AppTheme.primaryBlue,
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
                             const SizedBox(height: 24),
-                            
+
                             // Login Button
                             ElevatedButton(
-                              onPressed: authProvider.isLoading ? null : _handleLogin,
+                              onPressed: authProvider.isLoading
+                                  ? null
+                                  : _handleLogin,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppTheme.primaryBlue,
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(vertical: 16),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12),
                                 ),
@@ -291,9 +302,10 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                                       width: 20,
                                       child: CircularProgressIndicator(
                                         strokeWidth: 2,
-                                        valueColor: AlwaysStoppedAnimation<Color>(
-                                          Colors.white,
-                                        ),
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              Colors.white,
+                                            ),
                                       ),
                                     )
                                   : const Text(
@@ -309,7 +321,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                       ),
                     ),
                     const SizedBox(height: 24),
-                    
+
                     // Register Link
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,

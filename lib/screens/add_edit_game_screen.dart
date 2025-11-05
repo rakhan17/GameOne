@@ -25,7 +25,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
   late TextEditingController _playtimeController;
   late TextEditingController _tagInputController;
   late TextEditingController _coverUrlController;
-  
+
   double _rating = 5.0;
   int _progress = 0;
   DateTime? _completedDate;
@@ -33,7 +33,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
   final ImagePicker _picker = ImagePicker();
   final List<String> _tags = [];
   bool _isDirty = false;
-  
+
   String _selectedGenre = 'Action';
   String _selectedPlatform = 'PC';
   String _selectedStatus = 'Not Started';
@@ -80,8 +80,10 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
       text: widget.game?.playtimeHours.toString() ?? '0',
     );
     _tagInputController = TextEditingController();
-    _coverUrlController = TextEditingController(text: widget.game?.coverImage ?? '');
-    
+    _coverUrlController = TextEditingController(
+      text: widget.game?.coverImage ?? '',
+    );
+
     if (widget.game != null) {
       _selectedGenre = widget.game!.genre;
       _selectedPlatform = widget.game!.platform;
@@ -111,8 +113,6 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
 
   bool get _isEditing => widget.game != null;
 
-  
-
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -124,9 +124,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
             child: Column(
               children: [
                 _buildHeader(),
-                Expanded(
-                  child: _buildForm(),
-                ),
+                Expanded(child: _buildForm()),
               ],
             ),
           ),
@@ -170,7 +168,10 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
                 ),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 10),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 6,
+                    horizontal: 10,
+                  ),
                   decoration: BoxDecoration(
                     color: AppTheme.lightBlue,
                     borderRadius: BorderRadius.circular(8),
@@ -195,7 +196,9 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
                 return Icon(
                   _rating >= threshold - 1.0
                       ? Icons.star
-                      : (_rating >= threshold - 2.0 ? Icons.star_half : Icons.star_border),
+                      : (_rating >= threshold - 2.0
+                            ? Icons.star_half
+                            : Icons.star_border),
                   color: Colors.amber,
                 );
               }),
@@ -273,10 +276,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
   Widget _quickPlaytimeChip(String text, int delta, {bool reset = false}) {
     return ActionChip(
       label: Text(text),
-      avatar: Icon(
-        reset ? Icons.refresh : Icons.add,
-        size: 16,
-      ),
+      avatar: Icon(reset ? Icons.refresh : Icons.add, size: 16),
       onPressed: () {
         final current = int.tryParse(_playtimeController.text) ?? 0;
         final next = reset ? 0 : (current + delta);
@@ -404,7 +404,8 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
   }
 
   Widget _buildCoverImageWidget(String pathOrUrl) {
-    final isNetworkish = pathOrUrl.startsWith('http://') ||
+    final isNetworkish =
+        pathOrUrl.startsWith('http://') ||
         pathOrUrl.startsWith('https://') ||
         pathOrUrl.startsWith('blob:') ||
         pathOrUrl.startsWith('data:');
@@ -416,7 +417,8 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
           if (progress == null) return child;
           return const Center(child: CircularProgressIndicator());
         },
-        errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.broken_image)),
+        errorBuilder: (_, __, ___) =>
+            const Center(child: Icon(Icons.broken_image)),
       );
     }
     // Local file handling (mobile/desktop); on web this falls back safely
@@ -429,8 +431,14 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
 
   Future<void> _pickImage(ImageSource source) async {
     try {
-      final picked = await _picker.pickImage(source: source, maxWidth: 1600, imageQuality: 85);
-      if (picked == null) return;
+      final picked = await _picker.pickImage(
+        source: source,
+        maxWidth: 1600,
+        imageQuality: 85,
+      );
+      if (picked == null) {
+        return;
+      }
       if (kIsWeb) {
         final bytes = await picked.readAsBytes();
         final b64 = base64Encode(bytes);
@@ -439,8 +447,11 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
         String mime = 'image/jpeg';
         if (name.endsWith('.png')) {
           mime = 'image/png';
-        } else if (name.endsWith('.webp')) mime = 'image/webp';
-        else if (name.endsWith('.jpg') || name.endsWith('.jpeg')) mime = 'image/jpeg';
+        } else if (name.endsWith('.webp')) {
+          mime = 'image/webp';
+        } else if (name.endsWith('.jpg') || name.endsWith('.jpeg')) {
+          mime = 'image/jpeg';
+        }
         setState(() {
           _coverUrl = 'data:$mime;base64,$b64';
           _coverUrlController.text = _coverUrl!;
@@ -454,15 +465,24 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
         });
       }
     } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Gagal mengambil gambar: $e')),
-      );
+      if (!mounted) {
+        return;
+      }
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Gagal mengambil gambar: $e')));
     }
   }
 
   Widget _buildTagsSection() {
-    final suggestions = <String>['Indie', 'Co-op', 'Online', 'Singleplayer', 'Story Rich', 'Multiplayer'];
+    final suggestions = <String>[
+      'Indie',
+      'Co-op',
+      'Online',
+      'Singleplayer',
+      'Story Rich',
+      'Multiplayer',
+    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -505,15 +525,17 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
           spacing: 8,
           runSpacing: 4,
           children: [
-            ..._tags.map((t) => Chip(
-                  label: Text(t),
-                  onDeleted: () {
-                    setState(() {
-                      _tags.remove(t);
-                      _markDirty();
-                    });
-                  },
-                )),
+            ..._tags.map(
+              (t) => Chip(
+                label: Text(t),
+                onDeleted: () {
+                  setState(() {
+                    _tags.remove(t);
+                    _markDirty();
+                  });
+                },
+              ),
+            ),
           ],
         ),
         const SizedBox(height: 8),
@@ -535,7 +557,9 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
 
   void _addTag(String raw) {
     final t = raw.trim();
-    if (t.isEmpty) return;
+    if (t.isEmpty) {
+      return;
+    }
     if (_tags.contains(t)) {
       _tagInputController.clear();
       return;
@@ -568,16 +592,22 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
             children: [
               const Icon(Icons.percent, color: AppTheme.primaryBlue),
               const SizedBox(width: 8),
-              const Text('Progress (%)', style: TextStyle(fontWeight: FontWeight.w600)),
+              const Text(
+                'Progress (%)',
+                style: TextStyle(fontWeight: FontWeight.w600),
+              ),
               const Spacer(),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: AppTheme.lightBlue,
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Text('$_progress%'),
-              )
+              ),
             ],
           ),
           Slider(
@@ -648,18 +678,26 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
   }
 
   void _markDirty() {
-    if (!_isDirty) setState(() => _isDirty = true);
+    if (!_isDirty) {
+      setState(() {
+        _isDirty = true;
+      });
+    }
   }
 
   Future<bool> _onWillPop() async {
-    if (!_isDirty) return true;
+    if (!_isDirty) {
+      return true;
+    }
     final shouldDiscard = await _showDiscardDialog();
     return shouldDiscard;
   }
 
   void _handleBack() async {
     if (await _onWillPop()) {
-      if (mounted) Navigator.pop(context);
+      if (mounted) {
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -692,10 +730,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            AppTheme.primaryBlue,
-            AppTheme.darkBlue,
-          ],
+          colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
         ),
         borderRadius: const BorderRadius.only(
           bottomLeft: Radius.circular(32),
@@ -716,52 +751,54 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
           final titleSize = isNarrow ? 20.0 : 24.0;
           final subtitleSize = isNarrow ? 12.0 : 14.0;
           return Row(
-        children: [
-          IconButton(
-            onPressed: _handleBack,
-            icon: const Icon(Icons.arrow_back, color: Colors.white),
-          ),
-          const SizedBox(width: 8),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryYellow,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Icon(
-              _isEditing ? Icons.edit : Icons.add,
-              size: 28,
-              color: AppTheme.textPrimary,
-            ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  _isEditing ? 'Edit Game' : 'Tambah Game',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: titleSize,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+            children: [
+              IconButton(
+                onPressed: _handleBack,
+                icon: const Icon(Icons.arrow_back, color: Colors.white),
+              ),
+              const SizedBox(width: 8),
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: AppTheme.primaryYellow,
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                Text(
-                  _isEditing ? 'Ubah informasi game' : 'Tambah game ke koleksi',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: subtitleSize,
-                    color: Colors.white70,
-                  ),
+                child: Icon(
+                  _isEditing ? Icons.edit : Icons.add,
+                  size: 28,
+                  color: AppTheme.textPrimary,
                 ),
-              ],
-            ),
-          ),
-        ],
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      _isEditing ? 'Edit Game' : 'Tambah Game',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: titleSize,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Text(
+                      _isEditing
+                          ? 'Ubah informasi game'
+                          : 'Tambah game ke koleksi',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontSize: subtitleSize,
+                        color: Colors.white70,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           );
         },
       ),
@@ -816,7 +853,10 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
                   decoration: InputDecoration(
                     labelText: 'Catatan (Opsional)',
                     hintText: 'Tulis catatan atau review game',
-                    prefixIcon: const Icon(Icons.notes, color: AppTheme.primaryBlue),
+                    prefixIcon: const Icon(
+                      Icons.notes,
+                      color: AppTheme.primaryBlue,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(16),
                       borderSide: BorderSide.none,
@@ -880,7 +920,6 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
                   }
                   return null;
                 },
-                
               ),
               const SizedBox(height: 8),
               Wrap(
@@ -914,18 +953,14 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            ...leftColumn,
-                          ],
+                          children: [...leftColumn],
                         ),
                       ),
                       const SizedBox(width: 24),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            ...rightColumn,
-                          ],
+                          children: [...rightColumn],
                         ),
                       ),
                     ],
@@ -954,11 +989,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
             color: AppTheme.lightBlue,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(
-            icon,
-            size: 20,
-            color: AppTheme.primaryBlue,
-          ),
+          child: Icon(icon, size: 20, color: AppTheme.primaryBlue),
         ),
         const SizedBox(width: 12),
         Text(
@@ -1044,10 +1075,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
           fillColor: Colors.white,
         ),
         items: items.map((item) {
-          return DropdownMenuItem(
-            value: item,
-            child: Text(item),
-          );
+          return DropdownMenuItem(value: item, child: Text(item));
         }).toList(),
         onChanged: onChanged,
       ),
@@ -1059,10 +1087,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
       height: 56,
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [
-            AppTheme.primaryBlue,
-            AppTheme.darkBlue,
-          ],
+          colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
@@ -1089,10 +1114,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
             const SizedBox(width: 12),
             Text(
               _isEditing ? 'Simpan Perubahan' : 'Tambah Game',
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -1119,10 +1141,12 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
             playtimeHours: playtime,
             tags: _tags,
             coverImage: (_coverUrl ?? '').isEmpty ? null : _coverUrl,
-            completedDate: _selectedStatus == 'Completed' ? (_completedDate ?? DateTime.now()) : null,
+            completedDate: _selectedStatus == 'Completed'
+                ? (_completedDate ?? DateTime.now())
+                : null,
           );
           await provider.updateGame(updatedGame);
-          
+
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -1154,7 +1178,9 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
             playtimeHours: playtime,
             tags: _tags,
             coverImage: (_coverUrl ?? '').isEmpty ? null : _coverUrl,
-            completedDate: _selectedStatus == 'Completed' ? (_completedDate ?? DateTime.now()) : null,
+            completedDate: _selectedStatus == 'Completed'
+                ? (_completedDate ?? DateTime.now())
+                : null,
           );
 
           if (mounted) {
@@ -1180,10 +1206,7 @@ class _AddEditGameScreenState extends State<AddEditGameScreen> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Error: $e'),
-              backgroundColor: Colors.red,
-            ),
+            SnackBar(content: Text('Error: $e'), backgroundColor: Colors.red),
           );
         }
       }
