@@ -39,8 +39,11 @@ class GameCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Cover or Icon
-                    _buildCoverOrIcon(game.coverImage),
+                    // Cover or Icon with Hero animation
+                    Hero(
+                      tag: 'game_${game.id}',
+                      child: _buildCoverOrIcon(game.coverImage),
+                    ),
                     const SizedBox(width: 16),
                     // Game Info
                     Expanded(
@@ -211,19 +214,20 @@ class GameCard extends StatelessWidget {
     }
   }
 
-  Widget _buildCoverOrIcon(String? cover) {
+  Widget _buildCoverOrIcon(String? cover, {double size = 60}) {
     final border = BorderRadius.circular(12);
-    Widget buildFallback() => _buildIconBox();
+    Widget buildFallback() => _buildIconBox(size: size);
     if (cover != null && cover.isNotEmpty) {
-      final isNetworkish = cover.startsWith('http://') ||
+      final isNetworkish =
+          cover.startsWith('http://') ||
           cover.startsWith('https://') ||
           cover.startsWith('blob:') ||
           cover.startsWith('data:');
       return ClipRRect(
         borderRadius: border,
         child: SizedBox(
-          width: 60,
-          height: 60,
+          width: size,
+          height: size,
           child: isNetworkish
               ? Image.network(
                   cover,
@@ -238,24 +242,20 @@ class GameCard extends StatelessWidget {
         ),
       );
     }
-    return _buildIconBox();
+    return _buildIconBox(size: size);
   }
 
-  Widget _buildIconBox() {
+  Widget _buildIconBox({double size = 60}) {
     return Container(
-      width: 60,
-      height: 60,
+      width: size,
+      height: size,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
         ),
         borderRadius: BorderRadius.circular(12),
       ),
-      child: const Icon(
-        Icons.gamepad,
-        color: Colors.white,
-        size: 32,
-      ),
+      child: const Icon(Icons.gamepad, color: Colors.white, size: 32),
     );
   }
 
@@ -292,20 +292,10 @@ class GameCard extends StatelessWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Icon(
-                    Icons.gamepad,
-                    color: Colors.white,
-                    size: 48,
-                  ),
+                // Larger cover in details with matching Hero tag
+                Hero(
+                  tag: 'game_${game.id}',
+                  child: _buildCoverOrIcon(game.coverImage, size: 80),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
