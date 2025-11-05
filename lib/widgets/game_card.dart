@@ -39,19 +39,8 @@ class GameCard extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Game cover or fallback icon
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12),
-                        color: Colors.transparent,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: _buildCoverWidget(game.coverImage),
-                      ),
-                    ),
+                    // Cover or Icon
+                    _buildCoverOrIcon(game.coverImage),
                     const SizedBox(width: 16),
                     // Game Info
                     Expanded(
@@ -220,6 +209,54 @@ class GameCard extends StatelessWidget {
       default:
         return Colors.grey;
     }
+  }
+
+  Widget _buildCoverOrIcon(String? cover) {
+    final border = BorderRadius.circular(12);
+    Widget buildFallback() => _buildIconBox();
+    if (cover != null && cover.isNotEmpty) {
+      final isNetworkish = cover.startsWith('http://') ||
+          cover.startsWith('https://') ||
+          cover.startsWith('blob:') ||
+          cover.startsWith('data:');
+      return ClipRRect(
+        borderRadius: border,
+        child: SizedBox(
+          width: 60,
+          height: 60,
+          child: isNetworkish
+              ? Image.network(
+                  cover,
+                  fit: BoxFit.cover,
+                  errorBuilder: (_, __, ___) => buildFallback(),
+                )
+              : buildFileImage(
+                  cover,
+                  fit: BoxFit.cover,
+                  fallback: () => buildFallback(),
+                ),
+        ),
+      );
+    }
+    return _buildIconBox();
+  }
+
+  Widget _buildIconBox() {
+    return Container(
+      width: 60,
+      height: 60,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppTheme.primaryBlue, AppTheme.darkBlue],
+        ),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: const Icon(
+        Icons.gamepad,
+        color: Colors.white,
+        size: 32,
+      ),
+    );
   }
 
   void _showGameDetails(BuildContext context) {
@@ -444,50 +481,7 @@ class GameCard extends StatelessWidget {
     );
   }
 
-  Widget _buildCoverWidget(String? pathOrUrl) {
-    // Show cover image when available; fallback to a gamepad icon
-    if (pathOrUrl == null || pathOrUrl.isEmpty) {
-      return Container(
-        color: AppTheme.primaryBlue,
-        child: const Center(
-          child: Icon(Icons.gamepad, color: Colors.white, size: 32),
-        ),
-      );
-    }
-
-    final lower = pathOrUrl.toLowerCase();
-    final isNetworkish =
-        lower.startsWith('http://') ||
-        lower.startsWith('https://') ||
-        lower.startsWith('data:') ||
-        lower.startsWith('blob:');
-
-    if (isNetworkish) {
-      return Image.network(
-        pathOrUrl,
-        fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) =>
-            const Center(child: Icon(Icons.broken_image)),
-        loadingBuilder: (context, child, progress) {
-          if (progress == null) return child;
-          return const Center(
-            child: SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(strokeWidth: 2),
-            ),
-          );
-        },
-      );
-    }
-
-    // Local file/image handling (desktop/mobile). buildFileImage handles platform specifics.
-    return buildFileImage(
-      pathOrUrl,
-      fit: BoxFit.cover,
-      fallback: () => const Center(child: Icon(Icons.broken_image)),
-    );
-  }
+  // (Image helper removed — using _buildCoverOrIcon instead)
 
   Widget _buildBadges() {
     return Wrap(
