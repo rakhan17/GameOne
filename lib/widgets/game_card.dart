@@ -456,16 +456,27 @@ class GameCard extends StatelessWidget {
     }
 
     final lower = pathOrUrl.toLowerCase();
-    final isNetworkish = lower.startsWith('http://') || lower.startsWith('https://') || lower.startsWith('data:') || lower.startsWith('blob:');
+    final isNetworkish =
+        lower.startsWith('http://') ||
+        lower.startsWith('https://') ||
+        lower.startsWith('data:') ||
+        lower.startsWith('blob:');
 
     if (isNetworkish) {
       return Image.network(
         pathOrUrl,
         fit: BoxFit.cover,
-        errorBuilder: (_, __, ___) => const Center(child: Icon(Icons.broken_image)),
+        errorBuilder: (_, __, ___) =>
+            const Center(child: Icon(Icons.broken_image)),
         loadingBuilder: (context, child, progress) {
           if (progress == null) return child;
-          return const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)));
+          return const Center(
+            child: SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
+          );
         },
       );
     }
